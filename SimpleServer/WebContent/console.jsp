@@ -27,7 +27,8 @@
 	%>
 	<%= history.equals("null") ? "" : history %>
 	<form id="cmdfrm" action="/SimpleServer/xshell" method="post">
-		<%= startLine %> <input autocomplete="off" id="commandline" type="text" name="command" class="xshell" onkeypress="send(event);"/> 
+		<%= startLine %> <input autocomplete="off" id="commandline" type="text" 
+							name="command" class="xshell" onkeypress="send(event);"/> 
 	</form>
 </div>
 </body>

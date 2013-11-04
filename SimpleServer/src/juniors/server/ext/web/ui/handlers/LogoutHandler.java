@@ -21,7 +21,7 @@ public class LogoutHandler extends HttpServlet {
 			throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		session.setAttribute("user", null);
+		session.invalidate();
 		request.getRequestDispatcher("index.jsp").forward(request, response);
 		
 	}

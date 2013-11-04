@@ -13,7 +13,7 @@ public class UserManager implements UserManagerInterface{
 		userMap = new ConcurrentHashMap<String, User>();
 		authorizedUsers = new ConcurrentHashMap<Integer, User>();
 		
-		this.createUser("Admin", "Admin", "Admin", "Administrator", "1");
+		this.createUser("admin", "Admin", "Admin", "sserver", "1");
 	}
 	
 	/**

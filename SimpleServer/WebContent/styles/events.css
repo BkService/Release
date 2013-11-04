@@ -2,7 +2,7 @@
 div.eventItem {
 	color: blue;
 	font-size: x-large;
-	width: 300px;
+	width: 50%;
 	height: 20px;
 	margin: 5px;
 	cursor: pointer;
@@ -26,4 +26,9 @@ div.cellshow{
 	color: maroon;
 	margin-left: 40px;
 	cursor: pointer;
+}
+
+table.c {
+	margin-left: 40px;
+	margin-top: 10px;
 }

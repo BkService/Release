@@ -8,6 +8,7 @@ public class ManCommand implements ICommand {
 	private static final String DEFAULT_MAN = "		Manual of the wshell interpretator. Commands:<br>" +
 			"	clear 		- delete history.<br>" +
 			"	feedloader 	- work with the feed loader<br>" +
+			"	info		- command for get information about server<br>" +
 			"	exit 		- exit from webshell<br>" +
 			"	man		- show manual about command";
 	

@@ -45,6 +45,9 @@ function showc(marker) {
 function send(event){
 	event = event || window.event;
 	if(event.keyCode == 13) {
+		var cmd = document.getElementById('commandline').value;
+		if(cmd != null && cmd.length > 0)
+			oldcmd = cmd;
 		document.getElementById('cmdfrm').submit();
 	}
 }
@@ -54,4 +57,6 @@ function closeGr(divId) {
 	document.getElementById(divId).style.margin='0px';
 	document.getElementById('commandline').focus();
 }
+
+
 

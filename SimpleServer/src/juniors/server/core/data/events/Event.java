@@ -88,6 +88,10 @@ public class Event {
 	public int getMarketsCount(){
 		return markets.size();
 	}
+	
+	public HashMap<Integer, Market> getMarkets() {
+		return this.markets;
+	}
 }
 
 
