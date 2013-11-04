@@ -1,0 +1,29 @@
+
+div.eventItem {
+	color: blue;
+	font-size: x-large;
+	width: 300px;
+	height: 20px;
+	margin: 5px;
+	cursor: pointer;
+}
+div.itemMarket {
+	display: none;
+}
+div.cell {
+	display: none;
+}
+div.itemMarketView {
+	display: list-item;
+	font-size: large;
+	color:green;
+	margin-left: 30px;
+	cursor: pointer;
+}
+div.cellshow{
+	display: list-item;
+	font-size: medium;
+	color: maroon;
+	margin-left: 40px;
+	cursor: pointer;
+}

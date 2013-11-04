@@ -1,0 +1,44 @@
+body {
+	background-color: #EAEBFF;
+	text-align: center;
+	vertical-align: middle;
+	margin-left: 10%;
+	margin-right: 10%;
+	margin-top: 5%;
+}	
+h2 {
+	margin: 5px;
+	background-color: #DADBFF;
+}
+div {
+	margin: 10px;
+	text-align: center;
+	vertical-align: middle;
+}	
+div.visible {}
+div.none {
+	display: none;
+}
+div.action {
+	text-decoration: underline;
+	width:  100px;
+	height: 25px;
+	margin-left: 47%;
+}
+div.action:HOVER {
+	font-family: cursive;
+	cursor: pointer;
+}
+td.label {
+	text-align: left;
+	width:		200px;
+}
+table.form{
+	margin-left: 40%;
+}
+span.surelyField {
+	color: rgb(255, 100, 200);
+}
+div.message {
+	color: rgb(255, 80, 80);
+}

@@ -1,0 +1,54 @@
+div.header {
+	width: 100%;
+	height: 100px;
+	background-color: #DDDAF9
+}
+img.avatar {
+	width: 90px;
+	height: 90px;
+	border: 1px;
+	margin: 5px;
+}
+div.account {
+	margin-top: -90px;
+	margin-left: 100px;
+}
+div.logout {
+	position:relative;
+	float: right;
+	margin-top: -30px;
+	width: 80px;
+	height: 20px;
+}
+div.blockmenu {
+	position:relative;
+	width: 20%;
+	heght: 50%;
+	/*background-color: #DDDAF9;*/
+	float: left;
+	margin-top: 5px;
+}
+div.workspace {
+	position:relative;
+	width: 79%;
+	height: 50%;
+	/*background-color: #DDDAF9;*/
+	float: right;
+	margin-top: 5px;
+}
+span.labelmenu {
+	font-size: x-large;
+	margin-left: 12%;
+}
+td.itemmenu {
+	margin: 10px;
+	font-size: large;
+	margin-left: 5%;
+}
+td.itemmenu:VISITED, td.itemmenu:ACTIVE, td.itemmenu:AFTER, td.itemmenu:LINK {
+	color: balck;
+}
+td.itemmenu:hover {
+	background-color: lime;
+	color: black;
+}

@@ -1,0 +1,37 @@
+<form action="/SimpleServer/RegistrationValidator" method="post">
+	<table class="form">
+		<tr>
+			<td class="label"><span class="surelyField">Your first name</span></td>
+			<td><input id="regname" name="firstName" type="text"/></td>
+			<td><!-- for show error --></td>
+		</tr>
+		<tr>
+			<td class="label">Your last name</td>
+			<td><input name="lastName" type="text"/></td>
+		</tr>
+		<tr>
+			<td class="label"><span class="surelyField">Your login</span></td>
+			<td><input id="reguname" name="login" type="text"/></td>
+			<td><!-- for show error --></td>
+		</tr>
+		<tr>
+			<td class="label"><span class="surelyField">Password</span></td>
+			<td><input id="regpasswd" name="passwd" type="password"/></td>
+			<td><!-- for show error --></td>
+		</tr>
+		<tr>
+			<td class="label"><span class="surelyField">Repeat password</span></td>
+			<td><input id="regrpasswd" name="rpasswd" type="password"/></td>
+			<td><!-- for show error --></td>
+		</tr>
+		<tr>
+			<td class="label"><span class="surelyField">№ Visa/Account</span></td>
+			<td><input id="regvisa" name="count" type="text"/></td>
+			<td><!-- for show error --></td>
+		</tr>
+	</table>
+	<input type="submit" value="OK" onclick="return validatorRegForm();"/>
+</form>
+<br>
+Field with the <span class="surelyField">color</span> required
+<br>

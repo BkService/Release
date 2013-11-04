@@ -1,0 +1,64 @@
+body {
+	background-color: black;
+}
+
+div.grInfo {
+	width: 450px;
+	height: 200px;
+	background-color: gray;
+	margin-left: 50px;
+	margin-top: 20px;
+	border: 2px;
+	border-color: red;
+	color: aqua;
+}
+
+img.graphic {
+	width: 450px;
+	height: 175px;
+	border: 2px;
+	background-color: white;
+}
+
+div.main {
+	margin: 0px;
+	width: 100%;
+	height: 1000px;
+	border: 2px;
+	border-color: gray;
+	color: white;
+	background-color: black;
+}
+
+div.head {
+	background-color: rgb(70, 100, 70);
+	margin: -10px;
+	width: 100%;
+	height: 25px;
+	color: aqua;
+	position:fixed;
+}
+
+div.close {
+	background-color: green;
+	width: 25px;
+	height: 25px;
+	float: right;
+	vertical-align: middle;
+	text-align: center;
+	line-height: 25px;
+}
+
+div.close:HOVER {
+	background-color: red;
+	cursor: pointer;
+}
+
+input.xshell {
+	background: black; 
+	width: 85%; 
+	border: 0px;
+	color: white;
+}
+
+
