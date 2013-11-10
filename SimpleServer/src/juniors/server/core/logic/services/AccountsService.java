@@ -21,7 +21,6 @@ public class AccountsService {
 			.getSimpleName());
 
 	public AccountsService() {
-
 	}
 	
 	private String getHash(String in) {
@@ -45,9 +44,9 @@ public class AccountsService {
 		return hexString.toString();
 	}
 
-	public boolean addUser(User user) { //alex fixed
+	public boolean addUser(User user) {
 		if(user == null)
-			return false;		//alex fixed
+			return false;		
 		String passw = user.getPassword();
 		String hashPassw = getHash(passw);
 		boolean result = DataManager.getInstance().createUser(user.getLogin(),
@@ -56,9 +55,9 @@ public class AccountsService {
 		return result;
 	}
 
-	public boolean checkUser(User user) { //alex fixed
+	public boolean checkUser(User user) { 
 		User saveUser = DataManager.getInstance().getUser(user.getLogin());
-		if(saveUser == null) 	// alex fixed
+		if(saveUser == null) 	
 			return false;
 		String hashPassw = getHash(user.getPassword());
 		return hashPassw.equals(saveUser.getPassword());

@@ -14,8 +14,7 @@ public class FeedParser {
 	SAXParser parser;
 	FeedSAXParser feedSAXParser;
 	
-	public FeedParser() throws ParserConfigurationException, SAXException  {
-		
+	public FeedParser() throws ParserConfigurationException, SAXException  {		
 		factory = SAXParserFactory.newInstance(); 
 		parser = factory.newSAXParser(); 
 		feedSAXParser = new FeedSAXParser();
@@ -25,10 +24,10 @@ public class FeedParser {
 		try {
 			parser.parse(is, feedSAXParser);
 		} catch (SAXException e) {
-			System.err.println("Error, while parsing xml file:");
+			System.err.println("Error, while parsing xml file, cause:");
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.err.println("Problem while getting xml file from server:");
+			System.err.println("Problem while getting xml file from server, cause:");
 			e.printStackTrace();
 		}
 	}

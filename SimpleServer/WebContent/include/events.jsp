@@ -3,39 +3,38 @@
 <%@ page import="juniors.server.core.logic.*"%>
 <%@ page import="juniors.server.core.logic.services.*"%>
 <%@ page import="java.util.*"%>
-<br>
 <div style="font-size: xx-large; color: rgb(255, 100, 100);">
-	<p>Actual events</p>
+	Actual events
 </div>
-
 <div>
-
 	<%
 		EventService srv = ServerFacade.getInstance().getServices().getEventService();
 		Event[] events = new Event[srv.getEventsMap().size()];
-		events = srv.getEventsMap().values().toArray(events);
-		if(events == null){
-			response.getWriter().println("No events");
+		events = srv.getEventsMap().toArray(events);
+		if(events == null || events.length == 0){
+		%>
+			<br><p style="font-size: x-large; color: blue;">No events</p>		
+		<%
 			return;
 		}
 		for(int i = 0; i < events.length; ++i) {
 			/* print event */
 			%>
-				<div class="eventItem"><%= events[i].getDescription() %></div><br><br>
+				<br><div class="eventItem"><%= events[i].getDescription() %></div>
 			<%
-			Market[] markets = new Market[events[i].getMarkets().size()];
-			markets = events[i].getMarkets().values().toArray(markets);
+			Market[] markets = new Market[events[i].getMarketsCollection().size()];
+			markets = events[i].getMarketsCollection().toArray(markets);
 			if(markets == null) {
 				continue;
 			}
 			for(int j = 0; j < markets.length; ++j) {
 				/* print markets */
 				%>
-					<div class="itemMarketView"> <%= markets[j].getDescription() %> </div><br>
-					<table border="1" class="c">
+					<div class="itemMarketView"> <%= markets[j].getDescription() %> </div>
+					<table class="c">
 					<tr>
-						<td>Result</td>
-						<td>Coefficient</td>
+						<th>Result</th>
+						<th>Coefficient</th>
 					</tr>
 				<%
 				Outcome[] results = new Outcome[markets[j].getOutcomeMap().size()];
@@ -45,12 +44,10 @@
 				}
 				for(int k = 0; k < results.length; ++k) {
 					%>
-
-						<tr>
-							<td><%= results[k].getDescription() %></td>
-							<td><%= results[k].getCoefficient() %></td>
+						<tr class="element" id="<%= results[k].getOutcomeId() %>" onclick="showFormMakeBet(this);">
+							<td align="left"><%= results[k].getDescription() %></td>
+							<td align="right"><%= results[k].getCoefficient() %></td>
 						</tr>
-	
 					<%
 				}
 				%>
@@ -58,9 +55,9 @@
 				<%
 			}
 		}
-	
 	%>
-
+<br><br>
 </div>
+<br><br>
 
-<div id="all"></div>
+

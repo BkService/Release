@@ -3,6 +3,8 @@ package juniors.server.core.data.users;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import juniors.server.core.data.bets.*;
+
 
 public class UserManager implements UserManagerInterface{
 	
@@ -14,6 +16,7 @@ public class UserManager implements UserManagerInterface{
 		authorizedUsers = new ConcurrentHashMap<Integer, User>();
 		
 		this.createUser("admin", "Admin", "Admin", "sserver", "1");
+		this.createUser("login", "TestName", "TestSurname", "321321", "3211233211236548");
 	}
 	
 	/**
@@ -154,4 +157,62 @@ public class UserManager implements UserManagerInterface{
 	public int getCountAuthorizedUsers(){
 		return authorizedUsers.size();
 	}
+        
+        /**
+         * 
+         * @param login
+         * @param newBet
+         * @return true - ставка добавлена
+         */
+        public boolean addBet(String login, Bet newBet){
+            return getUser(login).addBet(newBet);
+        }
+	
+	/**
+	 *  Только тестирование.
+	 */
+	public void testUsers(){
+		String newLogin = "TestLog";
+		String newName = "Name";
+		String newSurname = "Surname";
+		String newPassword = "pas";
+		String newBankAccount = "account";
+		
+		this.createUser(newLogin, newName, newSurname, newPassword, newBankAccount);
+		
+		User user = this.getUser(newLogin);
+		
+		
+		
+	}
+        
+        /**
+         * Временный способ работы с финансами!
+         * Меняет balance на величину sum.
+         * Если надо  снять, то sum отрицательна.
+         * Balance должен быть >= 0 (надо ли это?)
+         * 
+         * @param login - логин пользователя
+         * @param sum - сумма операции
+         * @return - новый balance, или -1 в случае ошибки операции 
+         */
+        @Override
+        public float changeBalance(String login, float sum) {
+            return userMap.get(login).changeBalance(sum);
+        }
+
+	
+	/**
+	 * для проведения тестов
+	 * @param args - не используется
+	 */
+	public static void main(String[] args) {
+		UserManager userManager = new UserManager();
+		
+		userManager.testUsers();
+
+	}
+
+    
+	
 }

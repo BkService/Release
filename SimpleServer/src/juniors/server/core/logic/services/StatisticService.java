@@ -1,52 +1,128 @@
 package juniors.server.core.logic.services;
 
-import java.util.logging.Logger;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import juniors.server.core.data.DataManager;
-import juniors.server.ext.web.listeners.SessionsListener;
+import juniors.server.core.log.Logger;
+import juniors.server.core.log.Logs;
+import juniors.server.core.logic.RunnableService;
+import juniors.server.core.logic.ServerFacade;
+import juniors.server.ext.web.listeners.StatisticInfListener;
 
-public class StatisticService implements Runnable {
+public class StatisticService implements RunnableService {
 
-	private static int countsAuthUsers = 0, countsLogouts = 0, countsUsers = 0,
-			countsConnects = 0;
+    private static Logger log = Logs.getInstance().getLogger(
+	    StatisticService.class.getSimpleName());
 
-	private Logger log = Logger.getLogger(StatisticService.class.getSimpleName());
+    public static final int DELAY = 1;
+    public static final TimeUnit TIME_UNIT_DELAY = TimeUnit.SECONDS;
 
-	private static final int DELAY = 1000;
+    public static final int DELAY_UPDATE_LOGINS = 1;
+    public static final TimeUnit TIME_UNIT_DELAY_UPDATE_LOGINS = TimeUnit.HOURS;
 
-	public StatisticService() {
+    private ScheduledExecutorService executor;
 
-	}
+    private boolean started = false;
 
-	public int getCountsAuthUsers() {
-		return countsAuthUsers;
-	}
+    public StatisticService() {
+	executor = Executors.newScheduledThreadPool(2);
+    }
 
-	public int getCountsUsers() {
-		return countsUsers;
-	}
+    public long getCountLoginsPerHour() {
+	return DataManager.getInstance().getCountLoginPerHour();
+    }
 
-	public int getCountsConnects() {
-		return countsConnects;
-	}
-	
-	public int getCountsLogouts() {
-		return countsLogouts;
-	}
+    public long getCountLoginsPerDay() {
+	return DataManager.getInstance().getCountLoginPerDay();
+    }
 
-	// FIXME Не получаем количества успешных авторизаций. 
+    public long getCountLoginsPerMonth() {
+	return DataManager.getInstance().getCountLoginPerMonth();
+    }
+
+    public long getCountRequestsPerSecond() {
+	return DataManager.getInstance().getCountRequestPerSecond();
+    }
+
+    public long getCountRequestsPerMinute() {
+	return DataManager.getInstance().getCountRequestPerMinute();
+    }
+
+    public long getCountRequestsPerHour() {
+	return DataManager.getInstance().getCountRequestPerHour();
+    }
+
+    public long getCountRequestsPerDay() {
+	return DataManager.getInstance().getCountRequestPerDay();
+    }
+
+    public long getCountBetsPerSeconds() {
+	return DataManager.getInstance().getCountBetPerSecond();
+    }
+
+    public long getCountBetsPeMinut() {
+	return DataManager.getInstance().getCountBetPerMinute();
+    }
+
+    public int getCountsUsers() {
+	return DataManager.getInstance().getCountUsers();
+    }
+
+    private class TaskDelaySecond implements Runnable {
 	@Override
 	public void run() {
-		while (!Thread.interrupted()) {
-			countsUsers = DataManager.getInstance().getCountUsers();
-			countsConnects = SessionsListener.getCountConnects();
-			countsLogouts = SessionsListener.getCountDisconnects();			
-			SessionsListener.clearStaticInf();
-			try {
-				Thread.sleep(DELAY);
-			} catch (InterruptedException e) {
-				log.info("Stop static service.");
-			}
-		}
+	    DataManager.getInstance().setCountRequestPerSecond(
+		    ServerFacade.getCountRequest());
+	    ServerFacade.resetCountRequest();
+
+	    DataManager.getInstance().setCountBetPerSecond(
+		    BetsService.getCountBets());
+	    BetsService.resetCountBets();
 	}
+    }
+
+    private class TaskDelayHour implements Runnable {
+	@Override
+	public void run() {
+	    DataManager.getInstance().setCountLoginPerHour(
+		    StatisticInfListener.getCountAuthUsers());
+	    StatisticInfListener.resetStaticInf();
+	}
+    }
+
+    @Override
+    public void start() {
+	if (!started) {
+	    executor.scheduleWithFixedDelay(new TaskDelaySecond(), 0, DELAY,
+		    TIME_UNIT_DELAY);
+	    executor.scheduleWithFixedDelay(new TaskDelayHour(), 0,
+		    DELAY_UPDATE_LOGINS, TIME_UNIT_DELAY_UPDATE_LOGINS);
+	    started = true;
+	}
+    }
+
+    @Override
+    public void stop() {
+	if (started) {
+	    executor.shutdown();
+	    started = false;
+	}
+    }
+
+    @Override
+    public boolean isStarted() {
+	return started;
+    }
+
+    @Override
+    public long getDelay() {
+	return DELAY;
+    }
+
+    @Override
+    public TimeUnit getTimeUnitDelay() {
+	return TIME_UNIT_DELAY;
+    }
 }

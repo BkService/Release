@@ -9,38 +9,60 @@
 	<link rel="stylesheet" type="text/css" href="styles/cabinet.css"/>
 	<link rel="stylesheet" type="text/css" href="styles/events.css"/>
 	<script type="text/javascript" src="js/jsRequests.js"></script>
+	<script type="text/javascript" src="js/jsa.js"></script>
 </head>
 <body>
+
 <%
-	//это убрать отсюда нафиг. это очень плохая заглушка =)
 	User user = (User)request.getSession().getAttribute("user");
 	String namePage = (String) request.getSession().getAttribute("pagetype");
 	if(namePage == null || namePage.isEmpty())
 		namePage = "main";
+	if(user == null) {
+		/* stub. Надо сделать так, чтоб пользователи сразу 
+		переходили в кабинет (но добавить панель входа для тех кто не вошел) */
+		request.getSession().setAttribute("msg", "Limit of time wait finished");
+		request.getRequestDispatcher("/index.jsp").forward(request, response);
+	}
 %>
+<input type="hidden" id="loginOnPage" value="<%= user.getLogin() %>" />
+<div id="aboutPanel" class="naboutPanel">Version 2.0.0 Beta<br>Authors: <br>Vadim, Alexey, Dmitrii and Yakov</div>	
+<div id="formMakeBet" class="defaultl"></div>
+<div id="f" class="nforma">
+	<div class="headline">Form for make bets
+		<div class="buttonClose" onclick="hideFormMakeBet();">&#215</div>
+	</div>
+	<br>
+	<div id="wait"><img /></div>
+	<div id="formContent"><pre>
+  Information<br>
+  	<span id="descr"></span>
+  	Balance: <span id="ubalance"></span>
+  	<span id="bets" style="color: red;">Bet: <input id="bet" style="border:solid 1px green;" 
+  											value="0"><button onclick="checkAndSend();">Make bet</button></span>
+	</pre></div>
+</div>
 	<div class="header">
 		<img src="imgs/ava.jpg" class="avatar"/>
 		<div class="account">
 			<!-- get info about user from connectionManager -->
 			Name: 			<%= " " + user.getName() %><br>
 			Surname:   		<%= " " + user.getSurname() %><br>
+	  		Balance: <span id="money"><%= user.getBalance() %></span><br>
 			Bank account:	<%= " " + user.getBankAccount() %>
 		</div>
-		<div class="logout"><a href="/SimpleServer/LogoutHandler">Logout</a></div>
+		<div class="logout" onclick="window.location.replace('/SimpleServer/LogoutHandler');">Logout</div>
+		<div class="about" onclick="showAbout();">About</div>
 	</div>
 	
 	<div>
 		<div class="blockmenu">
 			<span class="labelmenu">Menu</span>
 			<table>
-				<tr><td class="itemmenu"><a id="main" style="cursor: pointer;" 
-										onclick="switchPage(this);">Main page</a></td></tr>
-				<tr><td class="itemmenu"><a id="events" style="cursor: pointer;" 
-										onclick="switchPage(this);">Upcoming events</a></td></tr>
-				<tr><td class="itemmenu"><a id="history" style="cursor: pointer;" 
-										onclick="switchPage(this);">My history of bets</a></td></tr>
-				<tr><td class="itemmenu"><a id="options" style="cursor: pointer;" 
-										onclick="switchPage(this);">Options</a></td></tr>
+				<tr><td id="main" class="itemmenu" style="cursor: pointer;" onclick="switchPage(this);">Main</td></tr>
+				<tr><td id="events" style="cursor: pointer;" onclick="switchPage(this);" class="itemmenu">Upcoming events</td></tr>
+				<tr><td class="itemmenu" id="history" style="cursor: pointer;" onclick="switchPage(this);">My history of bets</td></tr>
+				<tr><td class="itemmenu" id="options" style="cursor: pointer;" onclick="switchPage(this);">Options</td></tr>
 			</table>
 		</div>
 		<%
@@ -50,5 +72,6 @@
 			<jsp:include page="<%=namePage%>"></jsp:include>
 		</div>
 	</div>
+	<br>
 </body>
 </html>

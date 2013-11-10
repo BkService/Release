@@ -1,5 +1,4 @@
 package juniors.server.core.feed;
-
 import juniors.server.core.data.DataManager;
 import juniors.server.core.data.events.Event;
 import juniors.server.core.data.markets.Market;
@@ -27,7 +26,7 @@ public class FeedSAXParser extends DefaultHandler {
 		  if (qName.equals("m")) {
 			  int id = Integer.parseInt(atts.getValue("id"));
 			  String name = atts.getValue("n"); 
-			  curEvent = new Event(id, name);
+			  curEvent = new Event(id, 0, name);
 		  }
 		  if (qName.equals("t")) {
 			  int id = Integer.parseInt(atts.getValue("id"));

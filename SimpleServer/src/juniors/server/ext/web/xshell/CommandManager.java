@@ -15,6 +15,9 @@ public class CommandManager {
 				this.add(new ManCommand());
 				this.add(new FeedLoaderCommand());
 				this.add(new InfoCommand());
+				this.add(new TestCommand());
+				this.add(new UserCommand());
+				this.add(new EventsCommand());
 		}};
 		instance = new CommandManager();
 	}

@@ -17,7 +17,8 @@ div.itemMarketView {
 	display: list-item;
 	font-size: large;
 	color:green;
-	margin-left: 30px;
+	margin-left: 50px;
+	margin-top: 20px;
 	cursor: pointer;
 }
 div.cellshow{
@@ -29,6 +30,93 @@ div.cellshow{
 }
 
 table.c {
-	margin-left: 40px;
+	margin-left: 100px;
 	margin-top: 10px;
+	border-style: solid;
+	border-color: green;
+	border-width: 1px;
+	border-collapse: collapse;
+	width: 40%;
 }
+
+.locker {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;
+	background-color: rgb(130,130,130);
+	opacity: 0.8;
+	z-index: 998;
+}
+
+.forma {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-left: -250px;
+	margin-top: -100px;
+	width: 500px;
+	height: 200px;
+	opacity: 0.9;
+	background-color: white;
+	z-index: 999;
+}
+
+.nforma {
+	display: none;
+}
+
+.headline {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-left: -250px;
+	margin-top: -100px;
+	width: 500px;
+	height: 20px;
+	background-color: black;
+	color: white;
+	z-index: 1000;
+}
+
+.defaultl {
+	display: none;
+}
+
+.buttonClose {
+	width: 20px;
+	height: 20px;
+	float: right;
+	background-color: black;
+	color: white;
+	text-align: center;
+}
+
+.buttonClose:HOVER {
+	background-color: rgb(200,200,200);
+	color: black;
+	cursor: pointer;
+}
+
+.element {
+	border-style:solid;
+	border-color:green;
+	border-width:1px;
+	border-collapse:collapse;
+}
+
+.element:HOVER {
+	background-color: maroon;
+	color: lime;
+	cursor: pointer;
+}
+
+th {
+	border-style:solid;
+	border-color:green;
+	border-width:1px;
+	border-collapse:collapse;
+	background-color: orange;
+}
+

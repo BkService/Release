@@ -1,5 +1,7 @@
 package juniors.server.core.data.markets;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -65,20 +67,20 @@ public class Market {
 	
 	// нужна ли такая возможность и как её лучше реализовать?
 	public Map<Integer, Outcome> getOutcomeMap(){
-		return outcomesMap;
+	    return outcomesMap;
 	}
 	
-	/**
-	 * Пока заглушка
-	 * 
-	 * @param betId
-	 * @param user
-	 * @param outcomeId
-	 * @return
-	 */
-	public Bet makeBet(Integer betId, User user, Integer outcomeId){
-		return null;
+	public Collection<Outcome> getOutcomeCollection(){
+	    return outcomesMap.values();
 	}
+        
+        public boolean containsOutcome(int outcomeId){
+            return outcomesMap.containsKey(outcomeId);
+        }
+        
+        public Outcome getOutcome(int outcomeId){
+            return outcomesMap.get(outcomeId);
+        }
 	
 	/**
 	 * заглушка
@@ -89,27 +91,3 @@ public class Market {
 		return false;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

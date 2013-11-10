@@ -1,6 +1,8 @@
 package juniors.server.core.data.markets;
 
-import java.util.LinkedList;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+
 import juniors.server.core.data.bets.*;
 
 public class Outcome {
@@ -8,27 +10,27 @@ public class Outcome {
 	private Double coefficient; //всегда больше 1
 	private String description;
 	// как это с многопоточностью связать, потом решу
-	private LinkedList<Bet> bets; // контейнер со ставками на данный исход
+	private Set<Bet> bets; // контейнер со ставками на данный исход
 	
 	public Outcome(Integer id){
 		outcomeId = id;
 		coefficient = 1.0;
 		description = "No available description.";
-		bets = new LinkedList<Bet>();
+		bets = new ConcurrentSkipListSet<Bet>();
 	}
 	
 	public Outcome(Integer id, Double coefficient){
 		outcomeId = id;
 		this.coefficient = coefficient;
 		description = "No available description.";
-		bets = new LinkedList<Bet>();
+		bets = new ConcurrentSkipListSet<Bet>();
 	}
 	
 	public Outcome(Integer id, Double coefficient, String description){
 		outcomeId = id;
 		this.coefficient = coefficient;
 		this.description = description;
-		bets = new LinkedList<Bet>();
+		bets = new ConcurrentSkipListSet<Bet>();
 	}
 	
 	/**
@@ -84,7 +86,7 @@ public class Outcome {
 	 * Доработать проверку корректности ставки 
 	 * Создаёт ставку на данный исход 
 	 */
-	public boolean createBet(Bet newBet){
+	public boolean addBet(Bet newBet){
 		bets.add(newBet);
 		
 		return true;
@@ -94,9 +96,13 @@ public class Outcome {
 	 * 
 	 * @return контейнер со ставками
 	 */
-	public LinkedList<Bet> getBets(){
+	public Set<Bet> getBets(){
 		return bets;
 	}
+        
+        public boolean removeBet(Bet bet){
+            return bets.remove(bet);
+        }
 }
 
 

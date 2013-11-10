@@ -1,7 +1,10 @@
 package juniors.server.core.data.events;
 
 //import java.sql.Time;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Date;
 
 import juniors.server.core.data.markets.*;
 /**
@@ -15,24 +18,27 @@ public class Event {
 	private HashMap<Integer, Market> markets; // контейнер с маркетами. У каждого маркета свой ID
 	private String description; // описание события
 	private final int id; // идентефикатор события
-//	private Time startTime;	// время начала
-//	private Time finishTime;	// время окончания
+	private long startTime;	// время начала
+	private long finishTime;// время окончания
 	
-	public Event(int id){
+	public Event(int id, long startTime){
 		this.id = id;
+                this.startTime = startTime;
 		markets = new HashMap<Integer, Market>();
 		description = "No description available.";
 	}
 	
-	public Event(int id, String newDescription){
+	public Event(int id, long startTime, String newDescription){
 		this.id = id;
+                this.startTime = startTime;
 		markets = new HashMap<Integer, Market>();
 		description = newDescription;
 	}
 	
 	// а нужен ли такой конструктор
-	public Event(int id, HashMap<Integer, Market> newMarkets, String newDescription){
+	public Event(int id, long startTime, HashMap<Integer, Market> newMarkets, String newDescription){
 		this.id = id;
+                this.startTime = startTime;
 		markets = newMarkets;
 		description = newDescription;
 	}
@@ -89,23 +95,55 @@ public class Event {
 		return markets.size();
 	}
 	
-	public HashMap<Integer, Market> getMarkets() {
-		return this.markets;
+	public HashMap<Integer, Market> getMarketsMap(){
+	    return markets;
 	}
+	
+	public Collection<Market> getMarketsCollection(){
+	    return markets.values();
+	}
+        
+        public boolean containsMarket(int marketId){
+            return markets.containsKey(marketId);
+        }
+        
+        public void setStartTime(long newStartTime){
+            startTime = newStartTime;
+        }
+        
+        public void setFinishTime(long newFinishTime){
+            finishTime = newFinishTime;
+        }
+        
+        public long getStartTime(){
+            return startTime;
+        }
+        
+        public long getFinishTime(){
+            return finishTime;
+        }
+        
+        /**
+         * 
+         * @return время начала
+         */
+        public String getStartTimeToString(){
+            Date date = new Date(startTime);
+            return date.toString();
+        }
+        
+        /**
+         * 
+         * @return время конца
+         */
+        public String getFinishTimeToString(){
+            // если время конца не задано, то возвращается сообщение об этом
+            if (finishTime == 0){
+                return "Unknown";
+            }
+            else{
+                Date date = new Date(finishTime);
+                return date.toString(); 
+            }
+        }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

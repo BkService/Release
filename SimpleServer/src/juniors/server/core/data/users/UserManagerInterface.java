@@ -1,5 +1,10 @@
 package juniors.server.core.data.users;
 
+import juniors.server.core.data.bets.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public interface UserManagerInterface {	
 	/**
 	 * 
@@ -20,12 +25,12 @@ public interface UserManagerInterface {
 	 * Создаёт и добавляет пользователя с заданными параметрами. Так же 
 	 * 
 	 * 
-	 * @param new_login
-	 * @param new_name
-	 * @param new_surname
-	 * @param new_password
-	 * @param new_bank_account
-	 * @return true - если пользователь создан удачно. Иначе - false
+	 * @param newLogin
+	 * @param newName
+	 * @param newSurname
+	 * @param newPassword
+	 * @param newBankAccount
+	 * @return true - если пользователь создан удачно. �?наче - false
 	 */
 	public boolean createUser(String newLogin, String newName, String newSurname, 
 			String newPassword, String newBankAccount);
@@ -41,10 +46,10 @@ public interface UserManagerInterface {
 	/**
 	 * 
 	 * @param login
-	 * @param new_name
-	 * @param new_surname
-	 * @param new_password
-	 * @param new_bank_account
+	 * @param newName
+	 * @param newSurname
+	 * @param newPassword
+	 * @param newBankAccount
 	 * @return
 	 */
 	public boolean changeUserData(String login, String newName, 
@@ -52,7 +57,7 @@ public interface UserManagerInterface {
 	
 	/**
 	 * 
-	 * @param user_id
+	 * @param userId
 	 * @return true - залогинен. false - уже залогинен, нет такого пользователя и т.д.
 	 */
 	public boolean authorizeUser(Integer userId);
@@ -68,7 +73,18 @@ public interface UserManagerInterface {
 	 * @return количество авторизованных пользователей
 	 */
 	public int getCountAuthorizedUsers();
-	
+        
+        /**
+         * Временный способ работы с финансами!
+         * Меняет balance на величину sum.
+         * Если надо  снять, то sum отрицательна.
+         * Balance должен быть >= 0 (надо ли это?)
+         * 
+         * @param login - логин пользователя
+         * @param sum - сумма операции
+         * @return - новый balance, или -1 в случае ошибки операции 
+         */
+        public float changeBalance(String login, float sum);
 }
 
 

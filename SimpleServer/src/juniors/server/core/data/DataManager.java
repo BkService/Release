@@ -1,9 +1,11 @@
 package juniors.server.core.data;
 
+import juniors.server.core.data.events.Event;
+
 public class DataManager {
 	private static volatile Data instance;
    
-    private DataManager(){
+    public DataManager(){
     	
     }   
     
@@ -16,4 +18,13 @@ public class DataManager {
         }
         return localInstance;
    }
+    
+    /**
+     * для тестов
+     * @param args
+     */
+    public static void main(String [] args){
+    	DataManager.getInstance().addEvent(new Event(2, System.currentTimeMillis(), "dvdfvd"));
+    	String s = DataManager.getInstance().getEvent(2).getDescription();
+    }
 }

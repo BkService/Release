@@ -11,7 +11,7 @@
 <body onload="document.getElementById('commandline').focus();">
 <div class="main">
 	<div class="head">
-		__simple server console__ WebShell v 1.1.0
+		<u style="margin-left: 10px;">WebShell v 1.1.0</u>
 		<div class="close">
 			<a href="/SimpleServer/LogoutHandler">X</a>
 		</div>

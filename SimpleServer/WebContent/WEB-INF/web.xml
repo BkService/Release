@@ -25,12 +25,36 @@
     <servlet-class>juniors.server.ext.web.ui.handlers.SwitchHandler</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>xshell</servlet-name>
-  	<servlet-class>juniors.server.ext.web.xshell.WebShell</servlet-class>
+    <servlet-name>xshell</servlet-name>
+    <servlet-class>juniors.server.ext.web.xshell.WebShell</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>bet</servlet-name>
+    <servlet-class>juniors.server.ext.web.ui.handlers.BetHandler</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>getBalance</servlet-name>
+    <servlet-class>juniors.server.ext.web.ui.handlers.BalanceProvider</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>CreatorBets</servlet-name>
+  	<servlet-class>juniors.server.ext.web.ui.handlers.CreatorBets</servlet-class>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>xshell</servlet-name>
-  	<url-pattern>/xshell</url-pattern>
+  	<servlet-name>CreatorBets</servlet-name>
+  	<url-pattern>/CreatorBets</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getBalance</servlet-name>
+    <url-pattern>/BalanceProvider</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>bet</servlet-name>
+    <url-pattern>/BetHandler</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>xshell</servlet-name>
+    <url-pattern>/xshell</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>loginServlet</servlet-name>
@@ -53,14 +77,14 @@
     <url-pattern>/SwitchHandler</url-pattern>
   </servlet-mapping>
   <listener>
-    <listener-class>juniors.server.ext.web.listeners.SessionsListener</listener-class>
+    <listener-class>juniors.server.ext.web.listeners.StatisticInfListener</listener-class>
   </listener>
   <listener>
     <listener-class>juniors.server.ext.web.listeners.RunnerContextListener</listener-class>
   </listener>
   <error-page>
-  	<exception-type>java.lang.Throwable</exception-type>
-  	<location>/errpages/error.jsp</location>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/errpages/error.jsp</location>
   </error-page>
   <session-config>
     <session-timeout>30</session-timeout>

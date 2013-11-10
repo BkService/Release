@@ -9,6 +9,9 @@ public class ManCommand implements ICommand {
 			"	clear 		- delete history.<br>" +
 			"	feedloader 	- work with the feed loader<br>" +
 			"	info		- command for get information about server<br>" +
+			"	test		- command for get statistic of connections and users<br>" +
+			"	user		- command for create, update and remove users<br>" +
+			"	events		- command for show information about events<br>" +
 			"	exit 		- exit from webshell<br>" +
 			"	man		- show manual about command";
 	

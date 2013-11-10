@@ -41,4 +41,6 @@ public interface EventManagerInterface {
 	 * @return
 	 */
 	public Collection<Event> getEventsCollection();
+        
+        public boolean containsEvent(int eventId);
 }

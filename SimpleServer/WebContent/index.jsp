@@ -16,7 +16,6 @@
 		Welcome to <s>hell</s> Simple Server
 	</h2>
 	<%
-		ServerFacade sf = new ServerFacade();
 		User user = (User)request.getSession().getAttribute("user");
 		String msg = (String) request.getSession().getAttribute("msg");
 		msg = (msg == null) ? "" : msg;

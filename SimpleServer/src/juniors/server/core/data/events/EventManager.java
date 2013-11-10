@@ -1,6 +1,7 @@
 package juniors.server.core.data.events;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,7 +36,7 @@ public class EventManager implements EventManagerInterface {
 	}
 	
 	public void testEventManager(){
-		Event newEvent = new Event(1, "test evest");
+		Event newEvent = new Event(1, 1555555L, "test evest");
 		
 		this.addEvent(newEvent);
 		
@@ -62,4 +63,21 @@ public class EventManager implements EventManagerInterface {
 	public Collection<Event> getEventsCollection() {
 		return eventsMap.values();
 	}
+        
+        @Override
+        public boolean containsEvent(int eventId){
+            return eventsMap.containsKey(eventId);
+        }
+	
+	/**
+	 * для тестов
+	 * @param args
+	 */
+	public static void main(String[] args){
+		EventManager manager = new EventManager();
+	//	manager.testEventManager();
+	}
+        
+
+	
 }

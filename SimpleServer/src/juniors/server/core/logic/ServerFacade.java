@@ -1,8 +1,12 @@
 package juniors.server.core.logic;
 
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import juniors.server.core.feed.FeedLoader;
+import juniors.server.core.log.Logger;
+import juniors.server.core.log.Logs;
 import juniors.server.core.logic.services.Services;
-import juniors.server.core.logic.services.StatisticService;
 
 /**
  * 
@@ -10,68 +14,143 @@ import juniors.server.core.logic.services.StatisticService;
  */
 public class ServerFacade {
 
-	private boolean started = false;
+    private boolean started = false;
 
-	private static volatile ServerFacade instance;
+    private static final ServerFacade instance;
+    static {
+	instance = new ServerFacade();
+    }
 
-	private FeedLoader fl;
-	private StatisticService stService;
+    private static final Logger log = Logs.getInstance().getLogger(
+	    ServerFacade.class.getSimpleName());
 
-	private Thread feedLoaderThread;
+    private HashMap<Integer, RunnableService> runnableServices;
 
-	private Thread staticServiceThread;
+    private FeedLoader feedLoader;
 
-	public static ServerFacade getInstance() {
-		ServerFacade localInstance = instance;
-		if (localInstance == null) {
-			synchronized (ServerFacade.class) {
-				localInstance = instance;
-				if (localInstance == null) {
-					instance = localInstance = new ServerFacade();
-				}
-			}
-		}
-		return localInstance;
+    // FIXME добавить интерфейс RunnableService
+    // в службу и удалить поле
+
+    public static final int COUNT_SERVICES;
+
+    public static final Integer ID_SERVICE_FEEDLOADER, ID_SERVICE_STATISTIC;
+    static {
+	COUNT_SERVICES = 2;
+
+	ID_SERVICE_FEEDLOADER = 1;
+	ID_SERVICE_STATISTIC = 2;
+    }
+
+    private static AtomicInteger countRequests;
+    static {
+	countRequests = new AtomicInteger(0);
+    }
+
+    public static ServerFacade getInstance() {
+	return instance;
+    }
+
+    private ServerFacade() {
+	feedLoader = new FeedLoader();
+	runnableServices = new HashMap<Integer, RunnableService>(COUNT_SERVICES);
+	runnableServices.put(ID_SERVICE_STATISTIC, (RunnableService) Services
+		.getInstance().getStatisticService());
+	runnableServices.put(ID_SERVICE_FEEDLOADER, feedLoader);
+    }
+
+    private void runAllServices() {
+	
+	feedLoader.start();
+	for (RunnableService service : runnableServices.values()) {
+	    if (!service.isStarted()) {
+		service.start();
+	    }
 	}
+    }
 
-	public ServerFacade() {
-		fl = new FeedLoader();
-		stService = new StatisticService();
-	}
+    private void stopAllServices() {
+	feedLoader.stop();
+    }
 
-	private void runServices() {
-		feedLoaderThread = new Thread(fl);
-		feedLoaderThread.setDaemon(true);
-		staticServiceThread = new Thread(stService);		
-		feedLoaderThread.start();
-		staticServiceThread.start();
+    public synchronized void start() {
+	if (!started) {
+	    runAllServices();
+	    started = true;
+	    log.info("Server start");
 	}
+    }
 
-	private void stopServices() {
-		staticServiceThread.interrupt();
-		feedLoaderThread.interrupt();
-	}
+    /**
+     * @see getStatusService();
+     * @return status thread feed loader
+     */
+    @Deprecated
+    public boolean getStatusFL() {
+	return feedLoader.isStarted();
+    }
 
-	public synchronized void start() {
-		if (!started) {
-			runServices();
-			started = true;
-		}
+    public boolean runService(Integer id) {
+	if (started) {
+	    RunnableService service = runnableServices.get(id);
+	    if (!service.isStarted())
+		return false;
+	    service.start();
 	}
+	return false;
+    }
 
-	public boolean getStatusFL() {
-		return started;
+    public boolean stopService(Integer id) {
+	if (started) {
+	    RunnableService service = runnableServices.get(id);
+	    if (service.isStarted())
+		return false;
+	    service.start();
 	}
+	return false;
+    }
 
-	public synchronized void stop() {
-		stopServices();
-		started = false;
-	}
+    /**
+     * Получение статуса службы
+     * 
+     * @param id
+     * @return если службы запущена - возвращает true
+     */
+    public boolean getStatusService(Integer id) {
+	RunnableService service = runnableServices.get(id);
+	return (started == false) || (service == null) ? false : service
+		.isStarted();
+    }
 
-	public Services getServices() {
-		Services services = null;
-		if (started)
-			services = Services.getInstance();
-		return services;
+    public boolean getStatusServer() {
+	return started;
+    }
+
+    public void stop(Integer id) {
+	RunnableService service = runnableServices.get(id);
+	if (service != null)
+	    service.stop();
+    }
+
+    public synchronized void stop() {
+	stopAllServices();
+	started = false;
+	log.info("Server stop");
+    }
+
+    public Services getServices() {
+	Services services = null;
+	if (started) {
+	    services = Services.getInstance();
+	    countRequests.incrementAndGet();
 	}
+	return services;
+    }
+
+    public static int getCountRequest() {
+	return countRequests.get();
+    }
+
+    public static void resetCountRequest() {
+	countRequests.set(0);
+    }
 }

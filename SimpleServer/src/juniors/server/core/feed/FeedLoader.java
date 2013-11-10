@@ -1,40 +1,72 @@
 package juniors.server.core.feed;
+
 import java.io.InputStream;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import juniors.server.core.logic.DaemonThreadFactory;
+import juniors.server.core.logic.RunnableService;
+
 import org.xml.sax.SAXException;
 
+public class FeedLoader implements RunnableService {
+    
+    private FeedWorker feedWorker;
+    private FeedParser feedParser;
+    private int periodSec = 60;
+    ScheduledExecutorService service;
+    
+    public FeedLoader() {
+	feedWorker = new FeedWorker(2 * periodSec / 60);
+	try {
+	    feedParser = new FeedParser();
+	} catch (ParserConfigurationException | SAXException e) {
+	    System.err.println("Cannot create SAX parser, cause");
+	    e.printStackTrace();
+	}
+    }
+    
 
-public class FeedLoader implements Runnable {
-	private int periodSec = 60;
-	private FeedWorker feedWorker;
-	private FeedParser feedParser;
-	public FeedLoader() {
-		feedWorker = new FeedWorker(2 * periodSec / 60);
-		try {
-			feedParser = new FeedParser();
-		} catch (ParserConfigurationException | SAXException e) {
-			System.err.println("Cannot create SAX parser");
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public void start() {
+	service = Executors.newScheduledThreadPool(5, new DaemonThreadFactory());
+	service.scheduleAtFixedRate(new Runnable() {
+	    @Override
+	    public void run() {
+		update();		
+	    }
+	}, 0, periodSec, TimeUnit.SECONDS);	
+    }
 
-	@Override
-	public void run() {
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				update();
-			}
-		}, 0, periodSec * 1000);
-		
+    @Override
+    public void stop() {
+	service.shutdown();
+    }
+    
+    @Override
+    public boolean isStarted() {
+	return !service.isShutdown();
+    }
+
+    @Override
+    public long getDelay() {
+	// TODO Auto-generated method stub
+	return 0;
+    }
+
+    @Override
+    public TimeUnit getTimeUnitDelay() {
+	// TODO Auto-generated method stub
+	return null;
+    }
+    
+    public void update() {
+	InputStream is = feedWorker.update();
+	if (is != null) {
+	    feedParser.parse(is);
 	}
-	public void update() {
-		InputStream is = feedWorker.update();
-		feedParser.parse(is);
-	}
+    }
 }
