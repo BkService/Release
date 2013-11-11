@@ -2,7 +2,7 @@ package juniors.server.ext.web.xshell;
 
 public class AdminParameters {
 
-	private static String password = "server";
+	private static String password = "sserver";
 	
 	public static boolean changePassword(String oldpasswd, String newpasswd) {
 		boolean result = false;
@@ -11,6 +11,10 @@ public class AdminParameters {
 			password = newpasswd;
 		}
 		return result;
+	}
+	
+	public static boolean checkPassword(String passwd) {
+		return passwd.equals(password);
 	}
 	
 }

@@ -45,7 +45,6 @@
 	<div class="header">
 		<img src="imgs/ava.jpg" class="avatar"/>
 		<div class="account">
-			<!-- get info about user from connectionManager -->
 			Name: 			<%= " " + user.getName() %><br>
 			Surname:   		<%= " " + user.getSurname() %><br>
 	  		Balance: <span id="money"><%= user.getBalance() %></span><br>
