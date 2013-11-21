@@ -1,4 +1,8 @@
 package juniors.server.core.feed;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import juniors.server.core.data.DataManager;
 import juniors.server.core.data.events.Event;
 import juniors.server.core.data.markets.Market;
@@ -14,24 +18,26 @@ public class FeedSAXParser extends DefaultHandler {
 	Market curMarket;
 	Outcome curOutcome;
 	String curQName;
-	
-	
+
 	@Override 
 	public void startDocument() throws SAXException { 
-	  System.out.println("Start parse XML..."); 
+	  //System.out.println("Start parse XML..."); 
 	}
 	
 	public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
 		  curQName = qName;
 		  if (qName.equals("m")) {
 			  int id = Integer.parseInt(atts.getValue("id"));
+			  long time = parseTime(atts.getValue("dt"));
 			  String name = atts.getValue("n"); 
-			  curEvent = new Event(id, 0, name);
+			  curEvent = new Event(id, time, name);
+			  DataManager.getInstance().addEvent(curEvent);
 		  }
 		  if (qName.equals("t")) {
 			  int id = Integer.parseInt(atts.getValue("id"));
 			  String name = atts.getValue("n");
 			  curMarket = new Market(id, name);
+			  curEvent.addMarket(curMarket);
 		  }
 		  if (qName.equals("l")) {
 			  int id = Integer.parseInt(atts.getValue("id"));
@@ -42,15 +48,9 @@ public class FeedSAXParser extends DefaultHandler {
 
 	@Override 
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException { 
-		if (qName.equals("m")) {
-			DataManager.getInstance().addEvent(curEvent);
-			System.out.println(curEvent);
-		}
-		if (qName.equals("t")) {
-			curEvent.addMarket(curMarket);
-		}
 		if (qName.equals("l")) {
-			curMarket.addOutcome(curOutcome);
+		    	DataManager.getInstance().addOutcome(curOutcome, curEvent.getEventId(), curMarket.getMarketId());
+		    	//curMarket.addOutcome(curOutcome);
 		}
 	} 
 	public void characters(char[] ch, int start, int length) throws SAXException { 
@@ -60,6 +60,20 @@ public class FeedSAXParser extends DefaultHandler {
 	}
 	@Override 
 	public void endDocument() { 
-	  System.out.println("Stop parse XML..."); 
+	  //System.out.println("Stop parse XML..."); 
 	}
+	
+	public long parseTime(String s) {
+	    s = s + " +0000";
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm Z");
+	    Date date = new Date(0);
+	    try {
+		date = format.parse(s);
+	    } catch (ParseException e) {
+		System.err.println("Cannot parse date, cause");
+		e.printStackTrace();
+	    }
+	    return date.getTime();
+	}
+	
 }

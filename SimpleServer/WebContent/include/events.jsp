@@ -45,8 +45,8 @@
 				for(int k = 0; k < results.length; ++k) {
 					%>
 						<tr class="element" id="<%= results[k].getOutcomeId() %>" onclick="showFormMakeBet(this);">
-							<td align="left"><%= results[k].getDescription() %></td>
-							<td align="right"><%= results[k].getCoefficient() %></td>
+							<td><%= results[k].getDescription() %></td>
+							<td width="5%"><%= results[k].getCoefficient() %></td>
 						</tr>
 					<%
 				}

@@ -146,4 +146,15 @@ public class Event {
                 return date.toString(); 
             }
         }
+        
+        @Override
+        public String toString() {
+            String ans = startTime + " " + description + "\n";
+            for (Market market : markets.values()) {
+        	ans += market + "\n";
+            }
+            return ans;
+        }
+        
+        
 }

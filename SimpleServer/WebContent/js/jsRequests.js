@@ -21,6 +21,8 @@ function switchPage(data) {
 
 /* Функция для отрисовки формы, через которую игроки делают ставки */
 function showFormMakeBet(data) {
+	// save id of outcome
+	document.getElementById('outcomeNow').value=data.id;
 	/* Делаем видимыми саму форму(окно) и слой, блокирующий страницу */
 	document.getElementById('formMakeBet').setAttribute("class", "locker");
 	document.getElementById('f').setAttribute("class", "forma");
@@ -55,6 +57,27 @@ function showFormMakeBet(data) {
 	}
 }
 
+function checkAndCalc(value) {
+	var balance = document.getElementById('ubalance').innerHTML;
+	var numberBalance = parseInt(balance, 10);
+	var c = document.getElementById('COEFFICIENT').innerHTML;
+	if(parseInt(value) > numberBalance) {
+		document.getElementById('preoreMoneys').innerHTML = 'bet ' + value + " more balance";
+		document.getElementById('bet').value='';
+		return;
+	}
+	if(isNaN(value) || parseInt(value) <= 0 || value.charAt(value.length - 1) == '.') {
+		document.getElementById('bet').value='';
+		document.getElementById('preoreMoneys').innerHTML = 'not carry value';
+	} else {
+		var result = parseFloat(c) * parseInt(value);
+		if(!isNaN(result))
+			document.getElementById('preoreMoneys').innerHTML = 'Pre-payment: ' + result.toFixed(2);
+		else
+			document.getElementById('preoreMoneys').innerHTML = 'Input bet, please';
+	}
+}
+
 // Функция проверки введенной величины ставки
 // Ставка должна быть целым числом и не превышать баланса
 function checkAndSend() {
@@ -68,6 +91,10 @@ function checkAndSend() {
 		makeBetSpan.innerHTML = 'Add money to your account';
 		return;
 	} 
+	if(bet == '' || bet == null) {
+		document.getElementById('preoreMoneys').innerHTML = 'Input bet, please';
+		return;
+	}
 	// если игрок ввел белеберду то дать ему об этом знать
 	if(isNaN(bet) || parseInt(bet, 10) > numberBalance || parseInt(bet, 10) <= 0) {
 		makeBetSpan.innerHTML = 'Invalid value of bet. Close window and repeate.';
@@ -75,15 +102,16 @@ function checkAndSend() {
 	}
 	// если проверки прошли успешно, то отправляем запрос на создание ставки
 	var loginOnPageM = document.getElementById('loginOnPage').value;
+	var idCurrentOutcome = document.getElementById('outcomeNow').value;
 	$$a({
 		type: 'post',
 		url: '/SimpleServer/CreatorBets',
-		data: {'login' : loginOnPageM, 'bet' : bet}, 	/* yet send id of outcome */
+		data: {'login' : loginOnPageM, 'bet' : bet, 'outcome' : idCurrentOutcome},
 		response: 'text',
 		success: function (res){
 			// выводим результат
 			makeBetSpan.innerHTML = res;
-			// и обновляем баланс на странице
+			// и обновляем баланс на странице (с учетом резерва)
 			updateBalance();
 		}
 	});
@@ -113,8 +141,9 @@ function hideFormMakeBet() {
 	document.getElementById('f').setAttribute("class", "nforma");
 	// восстанавливаем начальные параметры формы (только что закрытой)
 	var makeBetSpanInput = document.getElementById('bets');
-	var defaulHTML = 'Bet: <input id="bet" style="border:solid 1px green;" value="0"><button onclick="checkAndSend();">Make bet</button>';
+	var defaulHTML = 'Bet: <input id="bet" style="border:solid 1px green;" value="" onkeyup="checkAndCalc(this.value);"><button onclick="checkAndSend();">Make bet</button>';
 	makeBetSpanInput.innerHTML = defaulHTML;
+	document.getElementById('outcomeNow').value='';
 }
 
 //нарисовать\скрыть панель "О программе"

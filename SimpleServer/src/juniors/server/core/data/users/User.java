@@ -1,9 +1,5 @@
 package juniors.server.core.data.users;
 
-import java.sql.Time;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -22,7 +18,7 @@ public class User{
 	protected String surname;
 	protected String password; // научиться правильно хранить пароль
 	protected String bankAccount; // номер банковского счёта
-        protected float balance;    // баланс (деньги), balance >= 0
+    protected Balance balance;    // баланс (деньги), balance >= 0
 	protected Set<Bet> bets; // контейнер с ссылками на ставки, которые делал пользователь
 	protected boolean isAuthorized;	// если авторизован - true
 	long lastTimeActive;	// время последней активности пользователя. 
@@ -42,14 +38,11 @@ public class User{
 		surname = newSurname;
 		bankAccount = newBankAccount;
 		password = newPassword;
-                balance = 1000f;
+                balance = new Balance();
+                balance.available = 1000f;
 		
 		bets = new ConcurrentSkipListSet<Bet>();
 		lastTimeActive = System.currentTimeMillis();
-	}
-	
-	public float getBalance() {
-		return this.balance;
 	}
 	
 	/**
@@ -126,9 +119,20 @@ public class User{
 		password = newPassword;
 	}
 
-	
+	/**
+	 * Добавляет новую ставку и резервирует необходимую сумму в балансе
+	 * @param newBet
+	 * @return true - всё добавлено без ошибок.
+	 */
 	public boolean addBet(Bet newBet) {
-		return bets.add(newBet);
+	    if (balance.reserve.containsKey(newBet) || bets.contains(newBet)){
+	    	return false;
+	    }
+	    
+	    balance.available -= newBet.getSum();
+	    balance.reserve.put(newBet, newBet.getSum());
+		this.bets.add(newBet);
+		return true;
 	}
 
 	
@@ -137,28 +141,38 @@ public class User{
 	}
 	
         /**
-         * Временный способ работы с финансами!
-         * Меняет balance на величину sum.
-         * Если надо  снять, то sum отрицательна.
-         * Balance должен быть >= 0 (надо ли это?)
+         * Если sum = 0, то ставка списывается, иначе ставка удаляется, а available 
+	 * пополняется на sum.
          * 
-         * @param sum - сумма операции.
-         * @return - новый balance, или -1 в случае ошибки операции 
+         * @param bet - ставка, с которой производится работа
+         * @param sum - сумма операции (строго > 0).
+         * @return - true - операция прошла успешно. False - произошла ошибка 
          */
-	public float changeBalance(float sum){
-            float tempBalance = balance + sum;
-            
-            // если баланс стал отрицательный - ошибка!
-            if (tempBalance < 0){
-                return -1;
+	public boolean calculateBet(Bet bet, float sum){
+	    // на случай отрицательной суммы нужна ли здесь проверка?
+	    if (sum < 0){
+		return false;
+	    }
+	    // проверка существования такого резерва и ставки 
+	    if (!balance.reserve.containsKey(bet) || bets.contains(bet)){
+		return false;
+	    }
+	    
+            // если ставка проиграна, она просто удаляется
+	    if (sum == 0){
+	    	balance.reserve.remove(bet);
+	    	bets.remove(bet);
+	    	return true;
             }
-            else {
-                return balance = tempBalance;
-            }
-        }
+	    else { // ставка выиграна
+		balance.available += sum;
+		balance.reserve.remove(bet);
+		bets.remove(bet);
+		return true;
+	    }
+     }
 	
-	
-	
-	
-	
+	public Balance getBalance() {
+		return this.balance;
+	}
 }

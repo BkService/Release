@@ -15,7 +15,7 @@ public class EventService {
 
 	}
 
-	public Collection<Event> getEventsMap() {
+	public Collection<Event> getEventsMap() {	    	
 		return DataManager.getInstance().getEventsMap().values();
 	}
 

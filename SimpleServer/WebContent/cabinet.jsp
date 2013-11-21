@@ -26,7 +26,7 @@
 	}
 %>
 <input type="hidden" id="loginOnPage" value="<%= user.getLogin() %>" />
-<div id="aboutPanel" class="naboutPanel">Version 2.0.0 Beta<br>Authors: <br>Vadim, Alexey, Dmitrii and Yakov</div>	
+<div id="aboutPanel" class="naboutPanel">Version 2.4.0<br>Authors: <br>Vadim, Alexey, Dmitrii and Yakov</div>	
 <div id="formMakeBet" class="defaultl"></div>
 <div id="f" class="nforma">
 	<div class="headline">Form for make bets
@@ -35,11 +35,11 @@
 	<br>
 	<div id="wait"><img /></div>
 	<div id="formContent"><pre>
-  Information<br>
-  	<span id="descr"></span>
+  Information	<span id="preoreMoneys">Input bet, please</span><input id="outcomeNow" type="hidden" value="" /><br>
+  	<span style="width: 400px;" id="descr"></span>
   	Balance: <span id="ubalance"></span>
   	<span id="bets" style="color: red;">Bet: <input id="bet" style="border:solid 1px green;" 
-  											value="0"><button onclick="checkAndSend();">Make bet</button></span>
+  											value="" onkeyup="checkAndCalc(this.value);"><button onclick="checkAndSend();">Make bet</button></span>
 	</pre></div>
 </div>
 	<div class="header">
@@ -47,7 +47,7 @@
 		<div class="account">
 			Name: 			<%= " " + user.getName() %><br>
 			Surname:   		<%= " " + user.getSurname() %><br>
-	  		Balance: <span id="money"><%= user.getBalance() %></span><br>
+	  		Balance: <span id="money"><%= user.getBalance().getBalanceValue() %></span><br>
 			Bank account:	<%= " " + user.getBankAccount() %>
 		</div>
 		<div class="logout" onclick="window.location.replace('/SimpleServer/LogoutHandler');">Logout</div>

@@ -34,6 +34,28 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 	public Event addEvent(Event newEvent) {
 		return eventManager.addEvent(newEvent);
 	}
+	
+	/**
+	 * Добавляет новый исход в маркет и в общий контейнер.
+	 * @param newOutcome
+	 * @param eventId
+	 * @param marketId
+	 * @return - true - если всё корректно добавлено
+	 */
+	@Override
+	public boolean addOutcome(Outcome newOutcome, int eventId, int marketId){
+	    return eventManager.addOutcome(newOutcome, eventId, marketId);
+	}
+	
+	@Override
+	public boolean containsOutcome(int outcomeId){
+	    return eventManager.containsOutcome(outcomeId);
+	}
+	
+	@Override
+	public Outcome getOutcome(int outcomeId){
+	    return eventManager.getOutcome(outcomeId);
+	}
 
 	@Override
 	public Event getEvent(int eventId) {
@@ -122,7 +144,7 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
         }       
         
         protected Outcome getOutcome(int eventId, int markedId, int outcomeId){
-            return eventManager.getEvent(eventId).getMarket(eventId).getOutcome(outcomeId);
+            return eventManager.getEvent(eventId).getMarket(markedId).getOutcome(outcomeId);
         }
         
         /**
@@ -133,35 +155,37 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
          * @param outcomeId
          * @return 
          */
-        public boolean makeBet(String userLogin, int eventId, int marketId, int outcomeId, double coefficient){
+        public boolean makeBet(String userLogin, int outcomeId, Float sum, double coefficient){
             // корректны ли данные запрса
-            if (!containsUser(userLogin) || !containsEvent(eventId)
-                    || !getEvent(eventId).containsMarket(marketId)
-                    || !getEvent(eventId).getMarket(marketId).containsOutcome(outcomeId)){
+            if (!containsUser(userLogin) || !containsOutcome(outcomeId)){
+            	System.out.println("fail");
                 return false;
             }
-            
-            Outcome currentOutcome = getOutcome(eventId, marketId, outcomeId);
+            Outcome currentOutcome = getOutcome(outcomeId);
             
             // если коеффициенты не совпадают
-            if (Math.abs(currentOutcome.getCoefficient() - coefficient) > 
+            /*if (Math.abs(currentOutcome.getCoefficient() - coefficient) > 
                     DOUBLE_DELTA){
                 return false;
-            }
-            
-            Bet newBet = new Bet(getUser(userLogin), currentOutcome, currentOutcome.getCoefficient());
+            }*/
+            Bet newBet = new Bet(getUser(userLogin), currentOutcome, currentOutcome.getCoefficient(), sum);
             
             // Записываю везде ставку. Если не удалось - тоже ошибка
             if (!currentOutcome.addBet(newBet)){
                 return false;
-            }
-            
+            }            
             if (!getUser(userLogin).addBet(newBet)){
                 currentOutcome.removeBet(newBet);
                 return false;
             }
             
             return true;
+        }
+        
+        
+        /// ALEX: I AM USING THIS STUB (DISPATCHER)
+        public boolean makeBet(String login, int outcomeId, int sum) {
+        	return makeBet(login, outcomeId, (float)sum, 0.01);
         }
 
     @Override
@@ -298,7 +322,7 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
     public Note getBetPerMinute() {
         return statistcsManager.getBetPerMinute();
     }
-    
+
     /**
     * Временный способ работы с финансами!
     * Меняет balance на величину sum.
@@ -309,10 +333,10 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
     * @param sum - сумма операции
     * @return - новый balance, или -1 в случае ошибки операции 
     */
-    @Override
+  /*  @Override
     public float changeBalance(String login, float sum) {
         return userManager.changeBalance(login, sum);
-    }
+    }*/
 
     
 }

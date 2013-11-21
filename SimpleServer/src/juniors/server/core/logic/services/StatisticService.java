@@ -63,11 +63,17 @@ public class StatisticService implements RunnableService {
     }
 
     public long getCountBetsPeMinut() {
-	return DataManager.getInstance().getCountBetPerMinute();
+    	return DataManager.getInstance().getCountBetPerMinute();
     }
 
     public int getCountsUsers() {
-	return DataManager.getInstance().getCountUsers();
+    	return DataManager.getInstance().getCountUsers();
+    }
+    
+    public int getCountOnlineUsers() {
+    	//FIXME
+    	//return StatisticInfListener.getCountOnlineUsers();
+    	return 1;
     }
 
     private class TaskDelaySecond implements Runnable {
@@ -95,6 +101,7 @@ public class StatisticService implements RunnableService {
     @Override
     public void start() {
 	if (!started) {
+	    executor = Executors.newScheduledThreadPool(2);
 	    executor.scheduleWithFixedDelay(new TaskDelaySecond(), 0, DELAY,
 		    TIME_UNIT_DELAY);
 	    executor.scheduleWithFixedDelay(new TaskDelayHour(), 0,

@@ -34,7 +34,7 @@ public class BetHandler extends HttpServlet {
 							result = "Event:	" + e.getDescription() + 
 									 "<br>	Market:	 " + m.getDescription() +
 									 "<br>	Outcome:  " + r.getDescription() +
-									 "<br>	Coef-nt:  " + r.getCoefficient();
+									 "<br>	Coef-nt:  <span id=\"COEFFICIENT\">" + r.getCoefficient() + "</span>";
 							break exit;
 						}
 					}

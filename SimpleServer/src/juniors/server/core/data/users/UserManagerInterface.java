@@ -84,7 +84,7 @@ public interface UserManagerInterface {
          * @param sum - сумма операции
          * @return - новый balance, или -1 в случае ошибки операции 
          */
-        public float changeBalance(String login, float sum);
+  //      public float changeBalance(String login, float sum);
 }
 
 

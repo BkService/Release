@@ -36,7 +36,8 @@ table.c {
 	border-color: green;
 	border-width: 1px;
 	border-collapse: collapse;
-	width: 40%;
+	width: 50%;
+	text-align: center;
 }
 
 .locker {
@@ -118,5 +119,13 @@ th {
 	border-width:1px;
 	border-collapse:collapse;
 	background-color: orange;
+}
+
+.betItem {
+	color: maroon;
+	margin: 10px;
+	border: solid 1px;
+	border-color: green;
+	width: 500px;
 }
 

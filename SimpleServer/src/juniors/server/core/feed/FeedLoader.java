@@ -13,12 +13,13 @@ import juniors.server.core.logic.RunnableService;
 import org.xml.sax.SAXException;
 
 public class FeedLoader implements RunnableService {
-    
+
     private FeedWorker feedWorker;
     private FeedParser feedParser;
     private int periodSec = 60;
     ScheduledExecutorService service;
-    
+    boolean isStarted = false;
+
     public FeedLoader() {
 	feedWorker = new FeedWorker(2 * periodSec / 60);
 	try {
@@ -28,27 +29,32 @@ public class FeedLoader implements RunnableService {
 	    e.printStackTrace();
 	}
     }
-    
 
     @Override
     public void start() {
-	service = Executors.newScheduledThreadPool(5, new DaemonThreadFactory());
-	service.scheduleAtFixedRate(new Runnable() {
-	    @Override
-	    public void run() {
-		update();		
-	    }
-	}, 0, periodSec, TimeUnit.SECONDS);	
+	if (!isStarted) {
+	    service = Executors.newScheduledThreadPool(5,
+		    new DaemonThreadFactory());
+	    isStarted = true;
+	    service.scheduleAtFixedRate(new Runnable() {
+		@Override
+		public void run() {
+		    update();
+		}
+	    }, 0, periodSec, TimeUnit.SECONDS);
+	}
     }
 
     @Override
     public void stop() {
+	isStarted = false;
 	service.shutdown();
+
     }
-    
+
     @Override
     public boolean isStarted() {
-	return !service.isShutdown();
+	return isStarted;
     }
 
     @Override
@@ -62,7 +68,7 @@ public class FeedLoader implements RunnableService {
 	// TODO Auto-generated method stub
 	return null;
     }
-    
+
     public void update() {
 	InputStream is = feedWorker.update();
 	if (is != null) {

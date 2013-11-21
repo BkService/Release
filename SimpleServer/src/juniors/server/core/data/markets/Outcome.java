@@ -9,6 +9,8 @@ public class Outcome {
 	private final Integer outcomeId;
 	private Double coefficient; //всегда больше 1
 	private String description;
+	private boolean isWin;
+	private boolean isFinished;
 	// как это с многопоточностью связать, потом решу
 	private Set<Bet> bets; // контейнер со ставками на данный исход
 	
@@ -88,7 +90,6 @@ public class Outcome {
 	 */
 	public boolean addBet(Bet newBet){
 		bets.add(newBet);
-		
 		return true;
 	}
 	
@@ -103,6 +104,27 @@ public class Outcome {
         public boolean removeBet(Bet bet){
             return bets.remove(bet);
         }
+
+	public void setWin() {
+	    isWin = true;
+	    isFinished = true;
+	}
+	public void setLose() {
+	    isWin = false;
+	    isFinished = true;
+	}
+	@Override
+	public String toString() {
+	    return description + " " + coefficient + " " + isFinished + " " + isWin;  
+	}
+	
+	public boolean getWin() {
+		return this.isWin;
+	}
+	
+	public boolean getFinish() {
+		return this.isFinished;
+	}
 }
 
 

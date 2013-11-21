@@ -1,7 +1,6 @@
 package juniors.server.core.data.events;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,14 +14,51 @@ import juniors.server.core.data.markets.Outcome;
  */
 public class EventManager implements EventManagerInterface {
 	Map<Integer, Event> eventsMap;	
+	Map<Integer, Outcome> outcomeMap;
 	
 	public EventManager(){
 		eventsMap = new ConcurrentHashMap<Integer, Event>();
+		outcomeMap = new ConcurrentHashMap<Integer, Outcome>();
 	}
 	
 	@Override
 	public Event addEvent(Event newEvent) {
 		return eventsMap.put(newEvent.getEventId(), newEvent);
+	}
+	
+	/**
+	 * Добавляет новый исход в маркет и в общий контейнер.
+	 * @param newOutcome
+	 * @param eventId
+	 * @param marketId
+	 * @return - true - если всё корректно добавлено
+	 */
+	@Override 
+	 public boolean addOutcome(Outcome newOutcome, int eventId, int marketId){
+	    // проверка корректности запроса
+	    if (!containsEvent(eventId)){
+		return false;
+	    }
+	    
+	    if (!getEvent(eventId).containsMarket(marketId)){
+		return false;
+	    }
+	    
+	    // добавляет новый исход в общий контейнер и в маркет
+	    getEvent(eventId).getMarket(marketId).addOutcome(newOutcome);
+	    outcomeMap.put(newOutcome.getOutcomeId(), newOutcome);
+	    
+	    return false;
+	}
+	
+	@Override
+	public boolean containsOutcome(int outcomeId){
+	    return outcomeMap.containsKey(outcomeId);
+	}
+	
+	@Override
+	public Outcome getOutcome(int outcomeId){
+	    return outcomeMap.get(outcomeId);
 	}
 
 	@Override
@@ -68,6 +104,8 @@ public class EventManager implements EventManagerInterface {
         public boolean containsEvent(int eventId){
             return eventsMap.containsKey(eventId);
         }
+        
+        
 	
 	/**
 	 * для тестов
@@ -78,6 +116,9 @@ public class EventManager implements EventManagerInterface {
 	//	manager.testEventManager();
 	}
         
-
+	public String toString() {
+		return outcomeMap.keySet().toString();
+		
+	}
 	
 }

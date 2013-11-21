@@ -1,5 +1,7 @@
 package juniors.server.core.data.users;
 
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,8 +17,8 @@ public class UserManager implements UserManagerInterface{
 		userMap = new ConcurrentHashMap<String, User>();
 		authorizedUsers = new ConcurrentHashMap<Integer, User>();
 		
-		this.createUser("admin", "Admin", "Admin", "sserver", "1");
-		this.createUser("login", "TestName", "TestSurname", "321321", "3211233211236548");
+		this.createUser("admin", "Admin", "Admin", "sserver", "XXXXXXXXXXXXXXXX");
+		this.createUser("login", "Name", "Surename", "321321", "4963.6548.3252.5791");
 	}
 	
 	/**
@@ -196,10 +198,10 @@ public class UserManager implements UserManagerInterface{
          * @param sum - сумма операции
          * @return - новый balance, или -1 в случае ошибки операции 
          */
-        @Override
+      /*  @Override
         public float changeBalance(String login, float sum) {
             return userMap.get(login).changeBalance(sum);
-        }
+        }*/
 
 	
 	/**

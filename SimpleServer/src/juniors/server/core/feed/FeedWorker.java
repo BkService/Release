@@ -23,7 +23,7 @@ public class FeedWorker {
 	    String requestAdress = address + "&delta="
 		    + ((isFirstRequest) ? (delta * 100) : delta);
 	    isFirstRequest = false;
-	    System.out.println(requestAdress);
+	    //System.out.println(requestAdress);
 	    URL url = new URL(requestAdress);
 	    HttpURLConnection cоnn = (HttpURLConnection) url.openConnection();
 	    while (cоnn.getResponseCode() >= 400) {
@@ -31,7 +31,7 @@ public class FeedWorker {
 	    }
 	    is = cоnn.getInputStream();
 	} catch (IOException e) {
-	    System.out.println("Cannot establish connection, cause:");
+	    System.err.println("Cannot establish connection, cause:");
 	    e.printStackTrace();
 	}
 	return is;
