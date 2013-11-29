@@ -125,6 +125,10 @@ public class Outcome {
 	public boolean getFinish() {
 		return this.isFinished;
 	}
+
+	public boolean isWin() {
+	    return isWin;
+	}
 }
 
 

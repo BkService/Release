@@ -20,7 +20,8 @@
 		for(int i = 0; i < events.length; ++i) {
 			/* print event */
 			%>
-				<br><div class="eventItem"><%= events[i].getDescription() %></div>
+				<br><div class="eventItem"><%= events[i].getDescription() %><br>
+				<%= events[i].getStartTimeToString() %></div><br>
 			<%
 			Market[] markets = new Market[events[i].getMarketsCollection().size()];
 			markets = events[i].getMarketsCollection().toArray(markets);

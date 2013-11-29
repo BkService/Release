@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="juniors.server.core.data.users.User" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -18,6 +19,9 @@
 	</div>
 	<br>
 	<%
+		if(!((User)request.getSession().getAttribute("user")).getLogin().equals("admin")) {
+			request.getRequestDispatcher("/index.jsp").forward(request, response);
+		}
 		String startLine = "admin@simpleserver ~ $";
 		String history = (String)request.getSession().getAttribute("shell");
 		if(history == null) {

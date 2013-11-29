@@ -61,6 +61,14 @@ public class Bet implements Comparable<Bet>{
 	public Float getSum(){
 	    return sum;
 	}
+	
+	/**
+	 * 
+	 * @return - id события
+	 */
+	public int getBetId(){
+	    return id;
+	}
 
 	@Override
 	public int compareTo(Bet o) {

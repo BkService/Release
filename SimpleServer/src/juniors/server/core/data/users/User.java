@@ -1,6 +1,8 @@
 package juniors.server.core.data.users;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import juniors.server.core.data.bets.Bet;
@@ -19,7 +21,7 @@ public class User{
 	protected String password; // научиться правильно хранить пароль
 	protected String bankAccount; // номер банковского счёта
     protected Balance balance;    // баланс (деньги), balance >= 0
-	protected Set<Bet> bets; // контейнер с ссылками на ставки, которые делал пользователь
+	protected Map<Integer, Bet> bets; // контейнер с ссылками на ставки, которые делал пользователь
 	protected boolean isAuthorized;	// если авторизован - true
 	long lastTimeActive;	// время последней активности пользователя. 
 	
@@ -41,7 +43,7 @@ public class User{
                 balance = new Balance();
                 balance.available = 1000f;
 		
-		bets = new ConcurrentSkipListSet<Bet>();
+		bets = new ConcurrentHashMap<Integer, Bet>();
 		lastTimeActive = System.currentTimeMillis();
 	}
 	
@@ -125,19 +127,28 @@ public class User{
 	 * @return true - всё добавлено без ошибок.
 	 */
 	public boolean addBet(Bet newBet) {
-	    if (balance.reserve.containsKey(newBet) || bets.contains(newBet)){
+	    if (balance.reserve.containsKey(newBet) || bets.containsKey(newBet.getBetId())){
 	    	return false;
 	    }
 	    
 	    balance.available -= newBet.getSum();
-	    balance.reserve.put(newBet, newBet.getSum());
-		this.bets.add(newBet);
-		return true;
+	    balance.reserve.put(newBet.getBetId(), newBet.getSum());
+	    
+	    this.bets.put(newBet.getBetId(), newBet);
+	    return true;
 	}
-
 	
-	public Set<Bet> getBets() {
-		return bets;
+	/**
+	 * 
+	 * @param betId
+	 * @return
+	 */
+	public Bet getBet(int betId){
+	    return bets.get(betId);
+	}
+	
+	public Map<Integer, Bet> getBets() {
+		return  bets;
 	}
 	
         /**
@@ -153,21 +164,28 @@ public class User{
 	    if (sum < 0){
 		return false;
 	    }
+	    
+	    float testSum = balance.reserve.get(1);
+	    Bet testBet = bets.get(1);
 	    // проверка существования такого резерва и ставки 
-	    if (!balance.reserve.containsKey(bet) || bets.contains(bet)){
+	    if (!balance.reserve.containsKey(bet.getBetId()) || !bets.containsKey(bet.getBetId())){
 		return false;
 	    }
 	    
             // если ставка проиграна, она просто удаляется
 	    if (sum == 0){
-	    	balance.reserve.remove(bet);
-	    	bets.remove(bet);
+	    	balance.reserve.remove(bet.getBetId());
+	    	bets.remove(bet.getBetId());
+	    	
+	    	int bbb = bets.size();
 	    	return true;
             }
 	    else { // ставка выиграна
 		balance.available += sum;
-		balance.reserve.remove(bet);
-		bets.remove(bet);
+		balance.reserve.remove(bet.getBetId());
+		bets.remove(bet.getBetId());
+		
+		int bbb = bets.size();
 		return true;
 	    }
      }

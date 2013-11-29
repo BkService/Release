@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import juniors.server.core.data.events.*;
+import juniors.server.core.data.finance.TransactMaker;
 import juniors.server.core.data.users.*;
 import juniors.server.core.data.markets.*;
 import juniors.server.core.data.bets.*;
@@ -23,11 +24,15 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
         private StatisticsManagerInterface statistcsManager;
         // при сравнении double что бы убрать погрешность
         private final double DOUBLE_DELTA = 0.000001;
+        private TransactMaker transactMaker;
 	
 	public Data(){
 		userManager = new UserManager();
 		eventManager = new EventManager();
                 statistcsManager = new StatisticsManager();
+                
+                transactMaker = new TransactMaker(getBookmaker());
+                
 	}
 	
 	@Override
@@ -178,6 +183,7 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
                 currentOutcome.removeBet(newBet);
                 return false;
             }
+            getBookmaker().addBet(newBet);
             
             return true;
         }
@@ -322,6 +328,40 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
     public Note getBetPerMinute() {
         return statistcsManager.getBetPerMinute();
     }
+    
+    /**
+     * Временный способ реализации транзакций
+     * 
+     * @param login
+     * @param betId
+     * @param sum
+     * @return true - транзакция прошла успешно
+     */
+    public boolean makeTransact(String login, int betId, float sum){
+	// получаю User
+	if (!containsUser(login)){
+	    return false;
+	}
+	User user = getUser(login);
+	Bet bet = user.getBet(betId);
+	
+	// есть ли такая ставка и не рассчитывалась ли она
+	if (bet == null || !transactMaker.addTransact(betId)){
+	    return false;
+	}
+	
+	if (user.calculateBet(bet, sum)){
+	    getBookmaker().calculateBet(bet, sum);
+	    return true;
+	}
+	
+	return false;	
+    }
+    
+    @Override
+    public Bookmaker getBookmaker(){
+	return userManager.getBookmaker();
+    }
 
     /**
     * Временный способ работы с финансами!
@@ -338,6 +378,34 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
         return userManager.changeBalance(login, sum);
     }*/
 
+    public static void main(String [] args){
+	Data data = new Data();
+	int eventId = 10;
+	long startTime = 10L;
+	int marketId = 11;
+	int outcomeId = 12;
+	double coefficient = 1.5d;
+	float sum = 10f;
+	Bookmaker bookmeker = data.getBookmaker();
+	
+	Event e = new Event(eventId, startTime);
+	Market m = new Market(marketId);
+	Outcome o = new Outcome(outcomeId, coefficient);
+	User user = data.getUser("login");
+	
+	data.addEvent(e);
+	e.addMarket(m);
+	data.addOutcome(o, e.getEventId(), m.getMarketId());
+	
+	boolean bool = data.makeBet(user.getLogin(), o.getOutcomeId(), sum, o.getCoefficient());
+	
+	Bet bet = (Bet) user.getBet(1);
+	
+	boolean tran = data.makeTransact(user.getLogin(), bet.getBetId(), 15);
+	
+	
+	
+    }
     
 }
 

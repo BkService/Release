@@ -27,7 +27,6 @@ public class StatisticService implements RunnableService {
     private boolean started = false;
 
     public StatisticService() {
-	executor = Executors.newScheduledThreadPool(2);
     }
 
     public long getCountLoginsPerHour() {

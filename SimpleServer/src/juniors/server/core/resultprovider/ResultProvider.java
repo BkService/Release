@@ -13,6 +13,7 @@ import juniors.server.core.data.markets.Market;
 import juniors.server.core.data.markets.Outcome;
 import juniors.server.core.logic.RunnableService;
 import juniors.server.core.logic.TimeChecker;
+import juniors.server.core.logic.services.BetsService;
 
 public class ResultProvider implements RunnableService {
 
@@ -69,12 +70,12 @@ public class ResultProvider implements RunnableService {
 		for (Market market : event.getMarketsMap().values()) {
 		    if (!market.isEmpty()) {
 			market.finish(generateResult(market));
+			BetsService.evalBets(market);
 		    }
 		}
 	    }
 	}
     }
-
     private Outcome generateResult(Market market) {
 	Random r = new Random();
 	Map<Integer, Outcome> outcomes = market.getOutcomeMap();

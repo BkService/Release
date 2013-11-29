@@ -37,12 +37,20 @@
     <servlet-class>juniors.server.ext.web.ui.handlers.BalanceProvider</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>CreatorBets</servlet-name>
-  	<servlet-class>juniors.server.ext.web.ui.handlers.CreatorBets</servlet-class>
+    <servlet-name>CreatorBets</servlet-name>
+    <servlet-class>juniors.server.ext.web.ui.handlers.CreatorBets</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>connector</servlet-name>
+  	<servlet-class>juniors.server.ext.emulator.Connector</servlet-class>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>CreatorBets</servlet-name>
-  	<url-pattern>/CreatorBets</url-pattern>
+  	<servlet-name>connector</servlet-name>
+  	<url-pattern>/Connector</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CreatorBets</servlet-name>
+    <url-pattern>/CreatorBets</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>getBalance</servlet-name>

@@ -74,7 +74,9 @@ public interface UserManagerInterface {
 	 */
 	public int getCountAuthorizedUsers();
         
-        /**
+	public Bookmaker getBookmaker();
+	
+	/**
          * Временный способ работы с финансами!
          * Меняет balance на величину sum.
          * Если надо  снять, то sum отрицательна.

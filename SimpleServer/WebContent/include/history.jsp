@@ -18,17 +18,18 @@
 			<th>Coefficient</th>
 			<th>Summ of bet</th>
 			<th>Is win</th>
-			<th>Finished</th>
+			<th>State</th>
 		</tr>
 	 <%
-	for(Bet bet : user.getBets()) {
+	for(Bet bet : user.getBets().values()) {
+		boolean finish = bet.getOutcome().getFinish();
 		%>
 			<tr class="element">
 				<td><%= bet.getOutcome().getDescription() %></td>
 				<td><%= bet.getCoefficient() %></td>
 				<td><%= bet.getSum() %></td>
-				<td><%= bet.getOutcome().getWin() ? "Yes" : "No" %></td>
-				<td><%= bet.getOutcome().getFinish() ? "Yes" : "No" %></td>
+				<td><%= finish ? (bet.getOutcome().getWin()?"Yes":"No") : "Wait" %></td>
+				<td><%= finish ? "Finished" : "Actual" %></td>
 			</tr>
 		<% 
 	}

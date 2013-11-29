@@ -16,7 +16,7 @@ public class EventService {
 	}
 
 	public Collection<Event> getEventsMap() {	    	
-		return DataManager.getInstance().getEventsMap().values();
+		return DataManager.getInstance().getEventsCollection();
 	}
 
 	public Event addEvent(Event newEvent) {

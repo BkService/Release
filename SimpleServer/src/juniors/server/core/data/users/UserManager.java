@@ -12,11 +12,13 @@ public class UserManager implements UserManagerInterface{
 	
 	private Map<String, User> userMap; // Контейнер с пользователями. Ключь для объекта - логин. 	
 	private Map<Integer, User> authorizedUsers; // контейнер с авторизованными пользователями
+	private Bookmaker bookmaker;
 	
 	public UserManager(){
 		userMap = new ConcurrentHashMap<String, User>();
 		authorizedUsers = new ConcurrentHashMap<Integer, User>();
-		
+		bookmaker = new Bookmaker("Bookmaker", "Bos", "Bos", "Bookmaker", "1234567890123456");
+			
 		this.createUser("admin", "Admin", "Admin", "sserver", "XXXXXXXXXXXXXXXX");
 		this.createUser("login", "Name", "Surename", "321321", "4963.6548.3252.5791");
 	}
@@ -59,6 +61,11 @@ public class UserManager implements UserManagerInterface{
 				new User(newLogin, newName, newSurname, newPassword, newBankAccount));
 		
 		return true;
+	}
+	
+	@Override
+	public Bookmaker getBookmaker(){
+	    return bookmaker;
 	}
 	
 	/**

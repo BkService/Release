@@ -12,10 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Balance {
     float available;
-    Map<Bet, Float> reserve;
+    Map<Integer, Float> reserve;
     
     public Balance() {
-    	reserve = new ConcurrentHashMap<Bet, Float>();
+    	reserve = new ConcurrentHashMap<Integer, Float>();
     }
     
     public int getBalanceValue() {
