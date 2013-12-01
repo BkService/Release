@@ -30,7 +30,7 @@
 <div id="formMakeBet" class="defaultl"></div>
 <div id="f" class="nforma">
 	<div class="headline">Form for make bets
-		<div class="buttonClose" onclick="hideFormMakeBet();">&#215</div>
+		<div class="buttonClose" onclick="hideFormMakeBet();"> &#215 </div>
 	</div>
 	<br>
 	<div id="wait"><img /></div>
