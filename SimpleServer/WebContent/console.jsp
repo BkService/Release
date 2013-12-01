@@ -19,7 +19,7 @@
 	</div>
 	<br>
 	<%
-		if(!((User)request.getSession().getAttribute("user")).getLogin().equals("admin")) {
+		if(!(Boolean)request.getSession().getAttribute("adm")) {
 			request.getRequestDispatcher("/index.jsp").forward(request, response);
 		}
 		String startLine = "admin@simpleserver ~ $";

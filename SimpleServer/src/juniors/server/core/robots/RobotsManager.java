@@ -4,7 +4,7 @@ import juniors.server.core.data.users.User;
 
 public class RobotsManager {
 	
-	static enum Strategy {RANDOM, SAFETY, GREEDY};
+	public static enum Strategy {RANDOM, SAFETY, GREEDY};
 	
 	int numberRobots;
 	User[] users;

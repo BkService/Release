@@ -26,8 +26,10 @@ public class LoginHandler extends HttpServlet {
 		String path = "/SwitchHandler";
 		Services s = ServerFacade.getInstance().getServices();
 		User user = null;
-		if(username.equals("admin") && passwd.equals("sserver"))
+		if(username.equals("admin") && passwd.equals("sserver")) {
 			path = "/console.jsp";
+			request.getSession().setAttribute("adm", new Boolean(true));
+		}
 		else {
 			if(s != null) {
 			AccountsService accounts = s.getAccountsService();
