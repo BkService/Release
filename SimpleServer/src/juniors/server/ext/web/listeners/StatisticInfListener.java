@@ -16,44 +16,44 @@ import javax.servlet.http.HttpSessionListener;
  */
 @WebListener
 public class StatisticInfListener implements HttpSessionAttributeListener,
-	HttpSessionListener {
+HttpSessionListener {
 
-    private static AtomicInteger countAuthUsers;
-    static {
-	countAuthUsers = new AtomicInteger(0);
-    }
-
-    @Override
-    public void attributeAdded(HttpSessionBindingEvent arg0) {
-	if (arg0.getName().equals("user") && arg0.getValue() != null) {
-	    countAuthUsers.incrementAndGet();
+	private static AtomicInteger countAuthUsers;
+	static {
+		countAuthUsers = new AtomicInteger(0);
 	}
-    }
 
-    @Override
-    public void attributeRemoved(HttpSessionBindingEvent arg0) {
-    }
+	@Override
+	public void attributeAdded(HttpSessionBindingEvent arg0) {
+		if (arg0.getName().equals("user") && arg0.getValue() != null) {
+			countAuthUsers.incrementAndGet();
+		}
+	}
 
-    @Override
-    public void attributeReplaced(HttpSessionBindingEvent arg0) {
-    }
+	@Override
+	public void attributeRemoved(HttpSessionBindingEvent arg0) {
+	}
 
-    public static int getCountAuthUsers() {
-	return countAuthUsers.get();
-    }
+	@Override
+	public void attributeReplaced(HttpSessionBindingEvent arg0) {
+	}
 
-    public static void resetStaticInf() {
-	countAuthUsers.set(0);
-    }
+	public static int getCountAuthUsers() {
+		return countAuthUsers.get();
+	}
 
-    @Override
-    public void sessionCreated(HttpSessionEvent arg0) {
+	public static void resetStaticInf() {
+		countAuthUsers.set(0);
+	}
 
-    }
+	@Override
+	public void sessionCreated(HttpSessionEvent arg0) {
 
-    @Override
-    public void sessionDestroyed(HttpSessionEvent arg0) {
-	countAuthUsers.decrementAndGet();
-    }
+	}
+
+	@Override
+	public void sessionDestroyed(HttpSessionEvent arg0) {
+		countAuthUsers.decrementAndGet();
+	}
 
 }

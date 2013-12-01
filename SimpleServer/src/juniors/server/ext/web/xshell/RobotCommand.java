@@ -20,6 +20,8 @@ public class RobotCommand implements ICommand {
 	@Override
 	public String action(HttpServletRequest req, HttpServletResponse res,
 			String... args) {
+		if(args.length > 0)
+			return "invalid arguments";
 		Thread stream = new Thread(new RunnerRobots());
 		stream.setDaemon(true);
 		stream.start();

@@ -19,6 +19,8 @@ public class CommandManager {
 				this.add(new UserCommand());
 				this.add(new EventsCommand());
 				this.add(new RobotCommand());
+				this.add(new PrintCommand());
+				this.add(new WriteCommand());
 		}};
 		instance = new CommandManager();
 	}

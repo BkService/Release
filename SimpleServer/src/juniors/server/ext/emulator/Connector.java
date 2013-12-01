@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import juniors.server.core.log.Logs;
 import juniors.server.core.logic.ServerFacade;
 import juniors.server.core.logic.services.AccountsService;
 import juniors.server.core.logic.services.BetsService;
@@ -17,12 +18,15 @@ import juniors.server.core.logic.services.EventService;
 public class Connector extends HttpServlet {
 	private static final long serialVersionUID = 20L;
 
+	private Logs log = Logs.getInstance();
+	
 	public Connector() {
 		super();
 	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
+		log.getLogger("connector").info("connector get request");
 		String cop = request.getParameter("cop");
 		ServletOutputStream sos = response.getOutputStream();
 		ObjectOutputStream ous = new ObjectOutputStream(sos);
@@ -33,7 +37,7 @@ public class Connector extends HttpServlet {
 			try {
 				sf = ServerFacade.getInstance().getServices().getEventService();
 			} catch (NullPointerException ex) {
-				System.out.println("fuck... server not started");
+				log.getLogger("connector").warning("fuck... server not started");
 				return;
 			}
 			ous.writeObject(sf.getEventsMap());
@@ -52,7 +56,7 @@ public class Connector extends HttpServlet {
 				sumValue = Integer.parseInt(sum);
 				outcomeIdValue = Integer.parseInt(outcome);
 			} catch (NumberFormatException ex) {
-				System.out.println("fuck... robot get me not carry format number(s)");
+				log.getLogger("connector").warning("fuck... robot get me not carry format number(s)");
 				return;
 			}
 			AccountsService as = null;
@@ -61,7 +65,7 @@ public class Connector extends HttpServlet {
 				as = ServerFacade.getInstance().getServices().getAccountsService();
 				bs = ServerFacade.getInstance().getServices().BetsService();
 			} catch (NullPointerException ex) {
-				System.out.println("fuck... server not started");
+				log.getLogger("connector").warning("fuck... server not started");
 				return;
 			}
 			if(as.getUser(login) == null || !as.getUser(login).getPassword().equals(passwd))
