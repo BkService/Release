@@ -70,9 +70,7 @@ public class StatisticService implements RunnableService {
     }
     
     public int getCountOnlineUsers() {
-    	//FIXME
-    	//return StatisticInfListener.getCountOnlineUsers();
-    	return 1;
+    	return StatisticInfListener.getCountOnlineUsers();
     }
 
     private class TaskDelaySecond implements Runnable {
