@@ -3,6 +3,7 @@ package juniors.server.core.data;
 import java.util.Collection;
 import java.util.Map;
 
+
 import juniors.server.core.data.events.*;
 import juniors.server.core.data.finance.TransactSaver;
 import juniors.server.core.data.users.*;
@@ -11,6 +12,7 @@ import juniors.server.core.data.bets.*;
 import juniors.server.core.data.statistics.Note;
 import juniors.server.core.data.statistics.StatisticsManager;
 import juniors.server.core.data.statistics.StatisticsManagerInterface;
+import juniors.server.core.log.Logger;
 import juniors.server.core.log.Logs;
 
 /**
@@ -159,17 +161,17 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 	 * @param outcomeId
 	 * @return 
 	 */
-	private Logs debug = Logs.getInstance();
+	private Logger logger = Logs.getInstance().getLogger("data");
 	public Bet makeBet(String userLogin, int outcomeId, double sum, double coefficient) {
 		// корректны ли данные запрса
 		if (!containsUser(userLogin) || !containsOutcome(outcomeId)) {
 			System.out.println("fail");
 			return null;
 		}
-		debug.getLogger("debug").info("check on exists user... ok");
+		logger.info("DATA: check on exists user... ok");
 		Outcome currentOutcome = getOutcome(outcomeId);
 		if(currentOutcome == null)
-			debug.getLogger("debug").info("fail get outcome!");
+			logger.warning("DATA: fail get outcome!");
 		
 		// если коеффициенты не совпадают
 		/*
@@ -177,19 +179,19 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 		 * DOUBLE_DELTA){ return false; }
 		 */
 		Bet newBet = new Bet(getUser(userLogin), currentOutcome,
-				currentOutcome.getCoefficient(), (float)sum);
+				currentOutcome.getCoefficient(), (float) sum);
 				
 		// Записываю везде ставку. Если не удалось - тоже ошибка
 		if (!currentOutcome.addBet(newBet)) {
-			debug.getLogger("debug").info("fail add bet on current outcome!");
+			logger.warning("DATA: fail add bet on current outcome!");
 			return null;
 		}
 		if (!getUser(userLogin).addBet(newBet)) {
-			debug.getLogger("debug").info("fail add bet to user!");
+			logger.warning("DATA: fail add bet to user!");
 			currentOutcome.removeBet(newBet);
 			return null;
 		}
-		getBookmaker().addBet(newBet);
+		//getBookmaker().addBet(newBet);
 
 		return newBet;
 	}
