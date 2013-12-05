@@ -1,3 +1,4 @@
+<%@page import="java.util.regex.Pattern"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="juniors.server.core.data.users.User" %>
@@ -19,20 +20,23 @@
 	</div>
 	<br>
 	<%
-		if(!(Boolean)request.getSession().getAttribute("adm")) {
+		HttpSession ses = request.getSession(true);
+		Boolean flag = (Boolean)ses.getAttribute("adm");
+		if(flag == null || !flag) {
 			request.getRequestDispatcher("/index.jsp").forward(request, response);
 		}
 		String startLine = "admin@simpleserver ~ $";
-		String history = (String)request.getSession().getAttribute("shell");
+		String history = (String)ses.getAttribute("shell");
 		if(history == null) {
 			history = "";
-			request.getSession().setAttribute("shell", "");
+			ses.setAttribute("shell", "");
 		}
 	%>
-	<%= history.equals("null") ? "" : history %>
+	<%= Pattern.matches("^null", history) ? "" : history %>
 	<form id="cmdfrm" action="/SimpleServer/xshell" method="post">
 		<%= startLine %> <input autocomplete="off" id="commandline" type="text" 
 							name="command" class="xshell" onkeypress="send(event);"/> 
+							
 	</form>
 </div>
 </body>

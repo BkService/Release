@@ -50,10 +50,10 @@ public class Connector extends HttpServlet {
 			String sum = request.getParameter("sum");
 			if(login == null || passwd == null || outcome == null || sum == null)
 				return;
-			int sumValue = 0;
+			double sumValue = 0;
 			int outcomeIdValue = 0;
 			try {
-				sumValue = Integer.parseInt(sum);
+				sumValue = Double.parseDouble(sum);
 				outcomeIdValue = Integer.parseInt(outcome);
 			} catch (NumberFormatException ex) {
 				log.getLogger("connector").warning("fuck... robot get me not carry format number(s)");

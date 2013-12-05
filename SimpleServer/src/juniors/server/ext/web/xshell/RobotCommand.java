@@ -20,7 +20,7 @@ public class RobotCommand implements ICommand {
 	@Override
 	public String action(HttpServletRequest req, HttpServletResponse res,
 			String... args) {
-		if(args.length > 0)
+		if(args.length > 0)	//FIXME
 			return "invalid arguments";
 		Thread stream = new Thread(new RunnerRobots());
 		stream.setDaemon(true);
@@ -36,6 +36,9 @@ public class RobotCommand implements ICommand {
 	private class RunnerRobots implements Runnable {
 		@Override
 		public void run() {
+			/* быдло код. по хорошему надо 
+			 * принимать в качестве параметров
+			 * количество юзеров и их стратегию */
 			User[] users1 = new User[3333];
 			User[] users2 = new User[3333];
 			User[] users3 = new User[3334];

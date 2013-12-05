@@ -18,6 +18,8 @@
 			return;
 		}
 		for(int i = 0; i < events.length; ++i) {
+			if(new Date().getTime() > events[i].getStartTime())
+				continue;
 			/* print event */
 			%>
 				<br><div class="eventItem"><%= events[i].getDescription() %><br>

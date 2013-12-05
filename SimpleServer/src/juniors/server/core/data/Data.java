@@ -160,7 +160,7 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
          * @param outcomeId
          * @return 
          */
-        public boolean makeBet(String userLogin, int outcomeId, Float sum, double coefficient){
+        public boolean _makeBet(String userLogin, int outcomeId, float sum, double c){
             // корректны ли данные запрса
             if (!containsUser(userLogin) || !containsOutcome(outcomeId)){
             	System.out.println("fail");
@@ -190,8 +190,8 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
         
         
         /// ALEX: I AM USING THIS STUB (DISPATCHER)
-        public boolean makeBet(String login, int outcomeId, int sum) {
-        	return makeBet(login, outcomeId, (float)sum, 0.01);
+        public boolean makeBet(String login, int outcomeId, double sumValue) {
+        	return _makeBet(login, outcomeId, (float)sumValue, 0.01);
         }
 
     @Override
@@ -397,7 +397,7 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 	e.addMarket(m);
 	data.addOutcome(o, e.getEventId(), m.getMarketId());
 	
-	boolean bool = data.makeBet(user.getLogin(), o.getOutcomeId(), sum, o.getCoefficient());
+	//boolean bool = data.makeBet(user.getLogin(), o.getOutcomeId(), sum, o.getCoefficient());
 	
 	Bet bet = (Bet) user.getBet(1);
 	
