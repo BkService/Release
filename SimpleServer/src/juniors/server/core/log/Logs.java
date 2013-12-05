@@ -26,7 +26,7 @@ public class Logs {
 
 	private BufferLogs buffer;
 
-	public final int DEFAULT_SIZE_BUFFER = 5;
+	public final int DEFAULT_SIZE_BUFFER = Integer.MAX_VALUE;
 
 	private Logs() {
 		mapLoggers = new ConcurrentHashMap<String, Logger>();

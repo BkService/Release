@@ -29,7 +29,7 @@ public class CreatorBets extends HttpServlet {
 			int valueBet = Integer.parseInt(bet);
 			int idOutcome = Integer.parseInt(outcome);
 			BetsService bs = ServerFacade.getInstance().getServices().BetsService();
-			if(!bs.makeBet(login, idOutcome, valueBet)) {
+			if(!bs.makeBet(login, idOutcome, (double)valueBet)) {
 				response.getWriter().write("Can not create bet");
 				return;
 			}

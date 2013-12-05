@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import juniors.server.core.data.events.*;
-import juniors.server.core.data.finance.TransactMaker;
 import juniors.server.core.data.finance.TransactSaver;
 import juniors.server.core.data.users.*;
 import juniors.server.core.data.markets.*;
