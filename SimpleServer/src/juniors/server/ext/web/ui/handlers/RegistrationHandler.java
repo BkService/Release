@@ -24,6 +24,11 @@ public class RegistrationHandler extends HttpServlet {
 		String login = (String) request.getParameter("login");
 		String passwd  = (String) request.getParameter("passwd");
 		String visa = (String) request.getParameter("count");
+		
+		if(lname == null || lname.isEmpty())
+			lname = "____";
+		
+		
 		User user = new User(login, name, lname, passwd, visa);
 
 		AccountsService account = ServerFacade.getInstance().getServices().getAccountsService();
