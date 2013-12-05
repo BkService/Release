@@ -1,12 +1,17 @@
 package juniors.server.core.feed;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import juniors.server.core.data.DataManager;
+import juniors.server.core.data.events.Event;
+import juniors.server.core.data.markets.Market;
+import juniors.server.core.data.markets.Outcome;
 import juniors.server.core.log.Logger;
 import juniors.server.core.log.Logs;
 import juniors.server.core.logic.DaemonThreadFactory;
@@ -21,37 +26,35 @@ import org.xml.sax.SAXException;
  * 
  */
 
-	public class FeedLoader implements RunnableService {
-		
-		
-		
+public class FeedLoader implements RunnableService {
+
 	/**
-	 * Helper to establish connection with provider and gets information from it.
+	 * Helper to establish connection with provider and gets information from
+	 * it.
 	 */
 	private FeedWorker feedWorker;
-	
+
 	/**
 	 * Helper to parse XML which was got from provider.
 	 */
 	private FeedParser feedParser;
-	
-	
+
 	/**
 	 * Service to refresh information every minute.
 	 * 
 	 */
 	ScheduledExecutorService service;
-	
+
 	/**
 	 * Delay between activities of feed.
 	 */
 	private int delaySec = 60;
-	
+
 	boolean isStarted = false;
 
 	Logger logger;
-	
-	
+	boolean needTest = true;
+
 	/**
 	 * Constructs feedWorker and feedParser.
 	 */
@@ -111,17 +114,30 @@ import org.xml.sax.SAXException;
 		return null;
 	}
 
-	
 	/**
-	 * Updates data.
-	 * Gets InputStream from provider. 
-	 * And gives this InputStream to parser. 
+	 * Updates data. Gets InputStream from provider. And gives this InputStream
+	 * to parser.
 	 */
 	public void update() {
 		logger.info("start updating");
 		InputStream is = feedWorker.update();
 		if (is != null) {
 			feedParser.parse(is);
+		}
+		if (needTest) {
+			Event curEvent = new Event(-1,
+					(new Date().getTime()) + 1000 * 60 * 2,
+					"@test Team1 - Team2");
+			DataManager.getInstance().addEvent(curEvent);
+			Market curMarket = new Market(-1, "Result");
+			curEvent.addMarket(curMarket);
+			DataManager.getInstance().addOutcome(
+					new Outcome(-1, 1.8, "Team1 win"), curEvent.getEventId(),
+					curMarket.getMarketId());
+			DataManager.getInstance().addOutcome(
+					new Outcome(-2, 1.9, "Team2 win"), curEvent.getEventId(),
+					curMarket.getMarketId());
+			needTest = false;
 		}
 		logger.info("finish updating");
 	}
