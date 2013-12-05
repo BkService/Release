@@ -11,7 +11,7 @@ public class Main {
 	public static void main(String[] args) {
 /*		URL url;
 		HttpURLConnection connection = null;
-		String address = "http://localhost:8080/xshell/";
+		String address = "http://localhost:8080/SimpleServer/xshell/";
 		String urlParameters = "command=man";
 		try {
 			// Create connection

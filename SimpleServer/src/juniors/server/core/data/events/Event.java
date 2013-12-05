@@ -3,12 +3,11 @@ package juniors.server.core.data.events;
 //import java.sql.Time;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Date;
 
 import juniors.server.core.data.markets.*;
 /**
- * Описывает событие (любое). Есть строковое описание события (пока что только так)
+ * Описывает событие (любое). Есть строковое описание события 
  * Так же есть контейнер с маркетами, время начала и время конца (предполагаемое) событие
  * 
  * @author kovalev
@@ -16,10 +15,10 @@ import juniors.server.core.data.markets.*;
  */
 public class Event {
 	private HashMap<Integer, Market> markets; // контейнер с маркетами. У каждого маркета свой ID
-	private String description; // описание события
-	private final int id; // идентефикатор события
+	private String description; 	// описание события
+	private final int id; 	// идентефикатор события
 	private long startTime;	// время начала
-	private long finishTime;// время окончания
+	private long finishTime;	// время окончания
 	
 	public Event(int id, long startTime){
 		this.id = id;
@@ -35,7 +34,6 @@ public class Event {
 		description = newDescription;
 	}
 	
-	// а нужен ли такой конструктор
 	public Event(int id, long startTime, HashMap<Integer, Market> newMarkets, String newDescription){
 		this.id = id;
                 this.startTime = startTime;
@@ -44,9 +42,9 @@ public class Event {
 	}
 	
 	/**
-	 * Получить маркет по id. (Пока будет какой то id, далее может заменим чем-нибудь)
+	 * Получить маркет по id. 
 	 * @param id
-	 * @return
+	 * @return - маркет с таким id
 	 */
 	public Market getMarket(Integer id){
 		return markets.get(id);
@@ -55,7 +53,7 @@ public class Event {
 	/**
 	 * Добавить новый маркет.
 	 * @param new_market
-	 * @return ссылка на созданый объект
+	 * @return ссылка на прошлый маркет с таким id. Т. е. если не null - то уже такой был
 	 */
 	public Market addMarket(Market newMarket){
 		return markets.put(newMarket.getMarketId(), newMarket);
@@ -147,6 +145,9 @@ public class Event {
             }
         }
         
+        /**
+         * Время начала события + описание + все маркеты
+         */
         @Override
         public String toString() {
             String ans = startTime + " " + description + "\n";

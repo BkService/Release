@@ -1,6 +1,5 @@
 package juniors.server.core.resultprovider;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -11,22 +10,56 @@ import juniors.server.core.data.DataManager;
 import juniors.server.core.data.events.Event;
 import juniors.server.core.data.markets.Market;
 import juniors.server.core.data.markets.Outcome;
+import juniors.server.core.log.Logger;
+import juniors.server.core.log.Logs;
 import juniors.server.core.logic.RunnableService;
-import juniors.server.core.logic.ServerFacade;
 import juniors.server.core.logic.TimeChecker;
 import juniors.server.core.logic.services.BetsService;
 
-public class ResultProvider implements RunnableService {
+/**
+ * Service to generate results of markets. 
+ * @author watson
+ *
+ */
 
+
+public class ResultProvider implements RunnableService {
+	/**
+	 * Service to refresh results every minute.
+	 */
 	ScheduledExecutorService service;
+	/**
+	 * State, which shows launch robot or not.
+	 */
 	boolean isStarted = false;;
-	long periodSec = 60;
+	/**
+	 * Delay in seconds between refreshes.
+	 */
+	long delaySec = 60;
+	
+	/**
+	 * Helper to check time (Event is started or not).
+	 */
 	TimeChecker timeChecker;
 
+	
+	/**
+	 * Logs to log, log and log.
+	 */
+	Logger logger;
+
+	/**
+	 * Constructs helper and logs.
+	 */
 	public ResultProvider() {
 		timeChecker = new TimeChecker();
+		logger = Logs.getInstance().getLogger("Result Provider");
+		logger.info("Result provider created");
 	}
 
+	/**
+	 * Runs the service.
+	 */
 	@Override
 	public void start() {
 		if (!isStarted) {
@@ -38,7 +71,8 @@ public class ResultProvider implements RunnableService {
 				public void run() {
 					update();
 				}
-			}, 60, 60, TimeUnit.SECONDS);
+			}, delaySec, delaySec, TimeUnit.SECONDS);
+			logger.info("Result provider started");
 		}
 	}
 
@@ -46,16 +80,18 @@ public class ResultProvider implements RunnableService {
 	public void stop() {
 		isStarted = false;
 		service.shutdown();
+		logger.info("Result provider stoped");
 	}
 
 	@Override
 	public boolean isStarted() {
 		return isStarted;
 	}
-
+	
+	
 	@Override
 	public long getDelay() {
-		return periodSec;
+		return delaySec;
 	}
 
 	@Override
@@ -63,19 +99,38 @@ public class ResultProvider implements RunnableService {
 		return TimeUnit.SECONDS;
 	}
 
+	
+	/**
+	 * Updates the results.
+	 * Checks all events.
+	 * If event's Time < current time it generates result to all market in this event.
+	 * And sends notice to BetsService that event has a result. 
+	 */
 	private void update() {
+		logger.info("Result provider is updating...");
 		Map<Integer, Event> events = DataManager.getInstance().getEventsMap();
 		for (Event event : events.values()) {
-			if (timeChecker.checkOccured(event)) {
+			if (timeChecker.checkOccurred(event)) {
+				logger.info(event.getEventId() + " " + event.getDescription() + "is started. Generating results...");
 				for (Market market : event.getMarketsMap().values()) {
 					if (!market.isEmpty()) {
-						market.finish(generateResult(market));
+						Outcome winOutcome = generateResult(market);
+						market.finish(winOutcome);
 						BetsService.evalBets(market);
+						logger.info(market.getMarketId() + " " + market.getMarketId() + "is cacluclated. " + winOutcome.getOutcomeId() + " " + winOutcome.getDescription() + " is winning outcome.");
 					}
 				}
 			}
 		}
+		logger.info("Result provider finished updating");
 	}
+	
+	/**
+	 * Generates market of bet in accordance with distribution of coefficient.
+	 * 
+	 * @param market - market to generate result.
+	 * @return - outcome that win.
+	 */
 
 	private Outcome generateResult(Market market) {
 		Random r = new Random();
@@ -94,6 +149,7 @@ public class ResultProvider implements RunnableService {
 			}
 		}
 		// It shouldn't be
+		logger.warning("Result provider makes something unexpected");
 		return outcomes.values().iterator().next();
 	}
 

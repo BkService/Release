@@ -15,140 +15,140 @@ import juniors.server.core.resultprovider.ResultProvider;
  */
 public class ServerFacade {
 
-	public static enum TypeRunService {
-		SERVICE_FEEDLOADER, SERVICE_STATISTIC, RESULT_PROVIDER
+    public static enum TypeRunService {
+	SERVICE_FEEDLOADER, SERVICE_STATISTIC, RESULT_PROVIDER
+    }
+
+    private boolean started = false;
+
+    private static final ServerFacade instance;
+    static {
+	instance = new ServerFacade();
+    }
+
+    private static final Logger log = Logs.getInstance().getLogger(
+	    ServerFacade.class.getSimpleName());
+
+    private HashMap<TypeRunService, RunnableService> runnableServices;
+
+    private static AtomicInteger countRequests;
+    static {
+	countRequests = new AtomicInteger(0);
+    }
+
+    public static ServerFacade getInstance() {
+	return instance;
+    }
+
+    private ServerFacade() {
+	runnableServices = new HashMap<TypeRunService, RunnableService>(
+		TypeRunService.values().length);
+	runnableServices.put(TypeRunService.SERVICE_STATISTIC, (RunnableService) Services
+		.getInstance().getStatisticService());
+	runnableServices.put(TypeRunService.SERVICE_FEEDLOADER, new FeedLoader());
+	runnableServices.put(TypeRunService.RESULT_PROVIDER, new ResultProvider());
+    }
+
+    private void runAllServices() {
+	for (RunnableService service : runnableServices.values()) {
+	    if (!service.isStarted()) {
+		service.start();
+	    }
 	}
+    }
 
-	private boolean started = false;
-
-	private static final ServerFacade instance;
-	static {
-		instance = new ServerFacade();
+    private void stopAllServices() {
+	for (RunnableService service : runnableServices.values()) {
+	    if (service.isStarted()) {
+		service.stop();
+	    }
 	}
+    }
 
-	private static final Logger log = Logs.getInstance().getLogger(
-			ServerFacade.class.getSimpleName());
-
-	private HashMap<TypeRunService, RunnableService> runnableServices;
-
-	private static AtomicInteger countRequests;
-	static {
-		countRequests = new AtomicInteger(0);
+    public synchronized void start() {
+	if (!started) {
+	    runAllServices();
+	    started = true;
+	    log.info("Server start");
 	}
+    }
 
-	public static ServerFacade getInstance() {
-		return instance;
-	}
+    /**
+     * @see getStatusService();
+     * @return status thread feed loader
+     */
+    @Deprecated
+    public boolean getStatusFL() {
+	return runnableServices.get(TypeRunService.SERVICE_FEEDLOADER).isStarted();
+    }
 
-	private ServerFacade() {
-		runnableServices = new HashMap<TypeRunService, RunnableService>(
-				TypeRunService.values().length);
-		runnableServices.put(TypeRunService.SERVICE_STATISTIC, (RunnableService) Services
-				.getInstance().getStatisticService());
-		runnableServices.put(TypeRunService.SERVICE_FEEDLOADER, new FeedLoader());
-		runnableServices.put(TypeRunService.RESULT_PROVIDER, new ResultProvider());
-	}
-
-	private void runAllServices() {
-		for (RunnableService service : runnableServices.values()) {
-			if (!service.isStarted()) {
-				service.start();
-			}
-		}
-	}
-
-	private void stopAllServices() {
-		for (RunnableService service : runnableServices.values()) {
-			if (service.isStarted()) {
-				service.stop();
-			}
-		}
-	}
-
-	public synchronized void start() {
-		if (!started) {
-			runAllServices();
-			started = true;
-			log.info("Server start");
-		}
-	}
-
-	/**
-	 * @see getStatusService();
-	 * @return status thread feed loader
-	 */
-	@Deprecated
-	public boolean getStatusFL() {
-		return runnableServices.get(TypeRunService.SERVICE_FEEDLOADER).isStarted();
-	}
-
-	public boolean runService(TypeRunService typeService) {
-		if (started) {
-			RunnableService service = runnableServices.get(typeService);
-			if (service.isStarted())
-				return false;
-			service.start();
-			return true;
-		}
+    public boolean runService(TypeRunService typeService) {
+	if (started) {
+	    RunnableService service = runnableServices.get(typeService);
+	    if (service.isStarted())
 		return false;
+	    service.start();
+	    return true;
 	}
+	return false;
+    }
 
-	/**
-	 * Остановка службы
-	 * @param typeService
-	 * @return
-	 */
-	public boolean stopService(TypeRunService typeService) {
-		if (started) {
-			RunnableService service = runnableServices.get(typeService);
-			if (!service.isStarted())
-				return false;
-			service.stop();
-			return true;
-		}
+    /**
+     * Остановка службы
+     * @param typeService
+     * @return
+     */
+    public boolean stopService(TypeRunService typeService) {
+	if (started) {
+	    RunnableService service = runnableServices.get(typeService);
+	    if (!service.isStarted())
 		return false;
+	    service.stop();
+	    return true;
 	}
+	return false;
+    }
 
-	/**
-	 * @param typeService
-	 * @return
-	 */
-	public boolean getStatusService(TypeRunService typeService) {
-		RunnableService service = runnableServices.get(typeService);
-		return (started == false) || (service == null) ? false : service
-				.isStarted();
-	}
+    /**
+     * @param typeService
+     * @return
+     */
+    public boolean getStatusService(TypeRunService typeService) {
+	RunnableService service = runnableServices.get(typeService);
+	return (started == false) || (service == null) ? false : service
+		.isStarted();
+    }
 
-	public boolean getStatusServer() {
-		return started;
-	}
+    public boolean getStatusServer() {
+	return started;
+    }
 
-	public void stop(TypeRunService typeService) {
-		RunnableService service = runnableServices.get(typeService);
-		if (service != null)
-			service.stop();
-	}
+    public void stop(TypeRunService typeService) {
+	RunnableService service = runnableServices.get(typeService);
+	if (service != null)
+	    service.stop();
+    }
 
-	public synchronized void stop() {
-		stopAllServices();
-		started = false;
-		log.info("Server stop");
-	}
+    public synchronized void stop() {
+	stopAllServices();
+	started = false;
+	log.info("Server stop");
+    }
 
-	public Services getServices() {
-		Services services = null;
-		if (started) {
-			services = Services.getInstance();
-			countRequests.incrementAndGet();
-		}
-		return services;
+    public Services getServices() {
+	Services services = null;
+	if (started) {
+	    services = Services.getInstance();
+	    countRequests.incrementAndGet();
 	}
+	return services;
+    }
 
-	public static int getCountRequest() {
-		return countRequests.get();
-	}
+    public static int getCountRequest() {
+	return countRequests.get();
+    }
 
-	public static void resetCountRequest() {
-		countRequests.set(0);
-	}
+    public static void resetCountRequest() {
+	countRequests.set(0);
+    }
 }

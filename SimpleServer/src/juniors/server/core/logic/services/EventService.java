@@ -11,19 +11,19 @@ import juniors.server.core.data.events.Event;
  */
 public class EventService {
 
-	public EventService() {
+        public EventService() {
 
-	}
+        }
 
-	public Collection<Event> getEventsMap() {	    	
-		return DataManager.getInstance().getEventsCollection();
-	}
+        public Collection<Event> getEventsMap() {                    
+                return DataManager.getInstance().getEventsCollection();
+        }
 
-	public Event addEvent(Event newEvent) {
-		return DataManager.getInstance().addEvent(newEvent);
-	}
+        public Event addEvent(Event newEvent) {
+                return DataManager.getInstance().addEvent(newEvent);
+        }
 
-	public Event getEvent(int eventId) {
-		return DataManager.getInstance().getEvent(eventId);
-	}
+        public Event getEvent(int eventId) {
+                return DataManager.getInstance().getEvent(eventId);
+        }
 }

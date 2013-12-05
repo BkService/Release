@@ -4,6 +4,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Маркет. Содержит контейнер с исходами, описание. Имеет уникальный идентификатор
+ * @author kovalev
+ *
+ */
 public class Market {
 	private final Integer marketId;
 	private Map<Integer, Outcome> outcomesMap;
@@ -27,14 +32,14 @@ public class Market {
 	
 	/**
 	 * 
-	 * @return
+	 * @return - описание маркета
 	 */
 	public String getDescription(){
 		return description;
 	}
 	
 	/**
-	 * 
+	 * Задать новое описание
 	 * @param new_description
 	 * @return true - описание задано. False - произошла ошибка.
 	 */
@@ -44,10 +49,6 @@ public class Market {
 		return true;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public Integer getMarketId(){
 		return marketId;
 	}
@@ -64,7 +65,6 @@ public class Market {
 		
 	}
 	
-	// нужна ли такая возможность и как её лучше реализовать?
 	public Map<Integer, Outcome> getOutcomeMap(){
 	    return outcomesMap;
 	}
@@ -73,6 +73,10 @@ public class Market {
 	    return outcomesMap.values();
 	}
         
+	/**
+	 * Есть ли исходы у маркета
+	 * @return - true - исходов нету
+	 */
 	public boolean isEmpty() {
 	    return outcomesMap.size() == 0;
 	}
@@ -106,7 +110,7 @@ public class Market {
         public String toString() {
             String ans = "";
             ans += description + "\n";
-            ans += outcomesMap.size() + "outcomes" + "\n";
+            ans += outcomesMap.size() + "outcomes" + "\n";// нужна ли такая возможность и как её лучше реализовать?
             for (Outcome outcome : outcomesMap.values()) {
         	ans += outcome + "\n";
             }

@@ -5,8 +5,7 @@ import java.util.Date;
 import juniors.server.core.data.events.Event;
 
 /**
- * It is stub to logic function checkTime.
- * 
+ * Helper to time check for event. (Event occured or not).
  * 
  * @author watson
  *
@@ -16,8 +15,12 @@ public class TimeChecker {
     public TimeChecker() {
 	
     }
-    
-    public boolean checkOccured(Event event) {
+    /**
+     * Check occurred event or not.
+     * @param event - event to check.
+     * @return - true if event occurred, false otherwise. 
+     */
+    public boolean checkOccurred(Event event) {
 	return new Date().after(new Date(event.getStartTime()));
     }
 }

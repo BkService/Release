@@ -13,120 +13,120 @@ import juniors.server.ext.web.listeners.StatisticInfListener;
 
 public class StatisticService implements RunnableService {
 
-    private static Logger log = Logs.getInstance().getLogger(
-	    StatisticService.class.getSimpleName());
+	private static Logger log = Logs.getInstance().getLogger(
+			StatisticService.class.getSimpleName());
 
-    public static final int DELAY = 1;
-    public static final TimeUnit TIME_UNIT_DELAY = TimeUnit.SECONDS;
+	public static final int DELAY = 1;
+	public static final TimeUnit TIME_UNIT_DELAY = TimeUnit.SECONDS;
 
-    public static final int DELAY_UPDATE_LOGINS = 1;
-    public static final TimeUnit TIME_UNIT_DELAY_UPDATE_LOGINS = TimeUnit.HOURS;
+	public static final int DELAY_UPDATE_LOGINS = 1;
+	public static final TimeUnit TIME_UNIT_DELAY_UPDATE_LOGINS = TimeUnit.HOURS;
 
-    private ScheduledExecutorService executor;
+	private ScheduledExecutorService executor;
 
-    private boolean started = false;
+	private boolean started = false;
 
-    public StatisticService() {
-    }
+	public StatisticService() {
+	}
 
-    public long getCountLoginsPerHour() {
-	return DataManager.getInstance().getCountLoginPerHour();
-    }
+	public long getCountLoginsPerHour() {
+		return DataManager.getInstance().getCountLoginPerHour();
+	}
 
-    public long getCountLoginsPerDay() {
-	return DataManager.getInstance().getCountLoginPerDay();
-    }
+	public long getCountLoginsPerDay() {
+		return DataManager.getInstance().getCountLoginPerDay();
+	}
 
-    public long getCountLoginsPerMonth() {
-	return DataManager.getInstance().getCountLoginPerMonth();
-    }
+	public long getCountLoginsPerMonth() {
+		return DataManager.getInstance().getCountLoginPerMonth();
+	}
 
-    public long getCountRequestsPerSecond() {
-	return DataManager.getInstance().getCountRequestPerSecond();
-    }
+	public long getCountRequestsPerSecond() {
+		return DataManager.getInstance().getCountRequestPerSecond();
+	}
 
-    public long getCountRequestsPerMinute() {
-	return DataManager.getInstance().getCountRequestPerMinute();
-    }
+	public long getCountRequestsPerMinute() {
+		return DataManager.getInstance().getCountRequestPerMinute();
+	}
 
-    public long getCountRequestsPerHour() {
-	return DataManager.getInstance().getCountRequestPerHour();
-    }
+	public long getCountRequestsPerHour() {
+		return DataManager.getInstance().getCountRequestPerHour();
+	}
 
-    public long getCountRequestsPerDay() {
-	return DataManager.getInstance().getCountRequestPerDay();
-    }
+	public long getCountRequestsPerDay() {
+		return DataManager.getInstance().getCountRequestPerDay();
+	}
 
-    public long getCountBetsPerSeconds() {
-	return DataManager.getInstance().getCountBetPerSecond();
-    }
+	public long getCountBetsPerSeconds() {
+		return DataManager.getInstance().getCountBetPerSecond();
+	}
 
-    public long getCountBetsPeMinut() {
-    	return DataManager.getInstance().getCountBetPerMinute();
-    }
+	public long getCountBetsPeMinut() {
+		return DataManager.getInstance().getCountBetPerMinute();
+	}
 
-    public int getCountsUsers() {
-    	return DataManager.getInstance().getCountUsers();
-    }
-    
-    public int getCountOnlineUsers() {
-    	return StatisticInfListener.getCountOnlineUsers();
-    }
+	public int getCountsUsers() {
+		return DataManager.getInstance().getCountUsers();
+	}
 
-    private class TaskDelaySecond implements Runnable {
+	public int getCountOnlineUsers() {
+		return StatisticInfListener.getCountOnlineUsers();
+	}
+
+	private class TaskDelaySecond implements Runnable {
+		@Override
+		public void run() {
+			DataManager.getInstance().setCountRequestPerSecond(
+					ServerFacade.getCountRequest());
+			ServerFacade.resetCountRequest();
+
+			DataManager.getInstance().setCountBetPerSecond(
+					BetsService.getCountBets());
+			BetsService.resetCountBets();
+		}
+	}
+
+	private class TaskDelayHour implements Runnable {
+		@Override
+		public void run() {
+			DataManager.getInstance().setCountLoginPerHour(
+					StatisticInfListener.getCountAuthUsers());
+			StatisticInfListener.resetStaticInf();
+		}
+	}
+
 	@Override
-	public void run() {
-	    DataManager.getInstance().setCountRequestPerSecond(
-		    ServerFacade.getCountRequest());
-	    ServerFacade.resetCountRequest();
-
-	    DataManager.getInstance().setCountBetPerSecond(
-		    BetsService.getCountBets());
-	    BetsService.resetCountBets();
+	public void start() {
+		if (!started) {
+			executor = Executors.newScheduledThreadPool(2);
+			executor.scheduleWithFixedDelay(new TaskDelaySecond(), 0, DELAY,
+					TIME_UNIT_DELAY);
+			executor.scheduleWithFixedDelay(new TaskDelayHour(), 0,
+					DELAY_UPDATE_LOGINS, TIME_UNIT_DELAY_UPDATE_LOGINS);
+			started = true;
+		}
 	}
-    }
 
-    private class TaskDelayHour implements Runnable {
 	@Override
-	public void run() {
-	    DataManager.getInstance().setCountLoginPerHour(
-		    StatisticInfListener.getCountAuthUsers());
-	    StatisticInfListener.resetStaticInf();
+	public void stop() {
+		if (started) {
+			executor.shutdown();
+			started = false;
+		}
 	}
-    }
 
-    @Override
-    public void start() {
-	if (!started) {
-	    executor = Executors.newScheduledThreadPool(2);
-	    executor.scheduleWithFixedDelay(new TaskDelaySecond(), 0, DELAY,
-		    TIME_UNIT_DELAY);
-	    executor.scheduleWithFixedDelay(new TaskDelayHour(), 0,
-		    DELAY_UPDATE_LOGINS, TIME_UNIT_DELAY_UPDATE_LOGINS);
-	    started = true;
+	@Override
+	public boolean isStarted() {
+		return started;
 	}
-    }
 
-    @Override
-    public void stop() {
-	if (started) {
-	    executor.shutdown();
-	    started = false;
+	@Override
+	public long getDelay() {
+		return DELAY;
 	}
-    }
 
-    @Override
-    public boolean isStarted() {
-	return started;
-    }
-
-    @Override
-    public long getDelay() {
-	return DELAY;
-    }
-
-    @Override
-    public TimeUnit getTimeUnitDelay() {
-	return TIME_UNIT_DELAY;
-    }
+	@Override
+	public TimeUnit getTimeUnitDelay() {
+		return TIME_UNIT_DELAY;
+	}
 }

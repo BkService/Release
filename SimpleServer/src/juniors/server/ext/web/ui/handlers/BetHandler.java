@@ -23,7 +23,7 @@ public class BetHandler extends HttpServlet {
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-		log.getLogger("betHandler").info("run servlet BetHandler");
+		log.getLogger("handler").info("run servlet BetHandler");
 		String sid = request.getParameter("outcome");
 		String result = "";
 		int iid = 0;

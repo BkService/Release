@@ -5,13 +5,18 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import juniors.server.core.data.bets.*;
 
+/**
+ * Исход маркета. Содержит описание, контейнер со ставками на этот исход.
+ * Имеет уникальный идентификатор
+ * @author kovalev
+ *
+ */
 public class Outcome {
 	private final Integer outcomeId;
 	private Double coefficient; //всегда больше 1
 	private String description;
-	private boolean isWin;
-	private boolean isFinished;
-	// как это с многопоточностью связать, потом решу
+	private boolean isWin; // true - исход победил
+	private boolean isFinished; // маркет закончился
 	private Set<Bet> bets; // контейнер со ставками на данный исход
 	
 	public Outcome(Integer id){
@@ -44,7 +49,7 @@ public class Outcome {
 	}
 	
 	/**
-	 * Коэффициент должен быть больше 1 (а надо ли это проверять?)
+	 * Коэффициент должен быть больше 1 
 	 * @param newCoefficient
 	 * @return true - коэффициент задан. false - не удалось задать
 	 */
@@ -57,18 +62,10 @@ public class Outcome {
 		return true;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public Integer getOutcomeId(){
 		return outcomeId;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public String getDescription(){
 		return description;
 	}
@@ -89,8 +86,10 @@ public class Outcome {
 	 * Создаёт ставку на данный исход 
 	 */
 	public boolean addBet(Bet newBet){
-		bets.add(newBet);
-		return true;
+	    if(isFinished) return false;
+	    
+	    bets.add(newBet);
+	    return true;
 	}
 	
 	/**
@@ -101,6 +100,11 @@ public class Outcome {
 		return bets;
 	}
         
+	/**
+	 * 
+	 * @param bet
+	 * @return false - такой ставки и не было
+	 */
         public boolean removeBet(Bet bet){
             return bets.remove(bet);
         }

@@ -1,7 +1,5 @@
 package juniors.server.core.data.users;
 
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -181,35 +179,19 @@ public class UserManager implements UserManagerInterface{
 	 *  Только тестирование.
 	 */
 	public void testUsers(){
-		String newLogin = "TestLog";
-		String newName = "Name";
-		String newSurname = "Surname";
-		String newPassword = "pas";
-		String newBankAccount = "account";
-		
-		this.createUser(newLogin, newName, newSurname, newPassword, newBankAccount);
-		
-		User user = this.getUser(newLogin);
+    		String newLogin = "TestLog";
+    		String newName = "Name";
+    		String newSurname = "Surname";
+    		String newPassword = "pas";
+    		String newBankAccount = "account";
+    		
+    		this.createUser(newLogin, newName, newSurname, newPassword, newBankAccount);
+    		
+    		User user = this.getUser(newLogin);
 		
 		
 		
 	}
-        
-        /**
-         * Временный способ работы с финансами!
-         * Меняет balance на величину sum.
-         * Если надо  снять, то sum отрицательна.
-         * Balance должен быть >= 0 (надо ли это?)
-         * 
-         * @param login - логин пользователя
-         * @param sum - сумма операции
-         * @return - новый balance, или -1 в случае ошибки операции 
-         */
-      /*  @Override
-        public float changeBalance(String login, float sum) {
-            return userMap.get(login).changeBalance(sum);
-        }*/
-
 	
 	/**
 	 * для проведения тестов

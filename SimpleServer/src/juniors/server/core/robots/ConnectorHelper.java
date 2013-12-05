@@ -1,51 +1,68 @@
 package juniors.server.core.robots;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
+
+import juniors.server.core.data.events.Event;
+
+/**
+ * Provides interface to interact with server.
+ * (Send requests and get responses).
+ * @author watson
+ *
+ */
 
 public class ConnectorHelper {
+	/**
+	 * Address of server.
+	 */
 	private static final String address = "http://localhost:8080/SimpleServer/Connector/";
 
 	public ConnectorHelper() {
 
 	}
 	/**
-	 * 
-	 * @return
-	 */
-	public String sendGetBetsRequest() {
+	 * Sends GET request to server to get all bets.
+	 * @return - events in map, which was received from server or null, if there are occurred problems.  
+	 */ 
+	public Map<Integer, Event> sendGetBetsRequest() {
 		HttpURLConnection connection = null;
 		try {
 			URL url = new URL(address + "cop=getBets");
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
-			
+	
 			InputStream is = connection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			String line;
-			StringBuilder response = new StringBuilder();
-			while ((line = rd.readLine()) != null) {
-				response.append(line);
-			}
-			rd.close();
-			return response.toString();
+			ObjectInputStream ois = new ObjectInputStream(is);
+			return (Map<Integer, Event>) ois.readObject();
 		} catch (IOException e) {
+			System.err.println("Problems with connection");
 			e.printStackTrace();
-			return null;
+		} catch (ClassNotFoundException e) {
+			System.err.println("Can't parse recieved data");
+			e.printStackTrace();
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
 			}
 		}
+		return null;
 	}
 	
-	//Send POST request to get all available bets.
-	public String sendMakeBetRequest(String login, String password,
+	/**
+	 * Sends POST request to make a bet.
+	 * @param login - user's login.
+	 * @param password - users's password.
+	 * @param outcomeId - outcome to bet.
+	 * @param sum - sum of bet.
+	 * @return - Acknowledgment of making bet.
+	 */
+	public boolean sendMakeBetRequest(String login, String password,
 			int outcomeId, double sum) {
 		URL url;
 		HttpURLConnection connection = null;
@@ -68,23 +85,17 @@ public class ConnectorHelper {
 
 			// Get Response
 			InputStream is = connection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			String line;
-			StringBuilder response = new StringBuilder();
-			while ((line = rd.readLine()) != null) {
-				response.append(line);
-			}
-			rd.close();
-			return response.toString();
+			ObjectInputStream ois = new ObjectInputStream(is);
+			return ois.readBoolean();
 
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
 
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
 			}
 		}
+		return false;
 	}
 }

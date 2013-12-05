@@ -13,7 +13,7 @@ public class Note {
     /**
      * Создание статистической записи
      * @param value - статистическая величина
-     * @param measurTime - время, когда она была получина
+     * @param measurTime - время, когда она была получена
      */
     public Note(long value){
         this.value = value;

@@ -18,27 +18,25 @@ public class BetsService {
 		countBets = new AtomicInteger(0);
 	}
 
-	public boolean makeBet(String login, int outcomeId, double sumValue) {
-		/*
-		 * // если событие началось Outcome outcome =
-		 * DataManager.getInstance().getOutcome(outcomeId); if
-		 * (DataManager.getInstance().getOutcome(outcomId)....getStartTime() <
-		 * System .currentTimeMillis()) return false;
-		 */
-		return DataManager.getInstance().makeBet(login, outcomeId, sumValue);
+	public boolean makeBet(String login, int outcomeId, double sum) {
+		countBets.incrementAndGet();
+		Bet bet = DataManager.getInstance().makeBet(login, outcomeId, sum);
+		if(bet == null)
+			return false;
+		return DataManager.getInstance().getBookmaker().addBet(bet);
 	}
 
 	public static void evalBets(Market market) {
 		for (Outcome outcome : market.getOutcomeCollection()) {
-			if (!outcome.isWin()) {
+			if (!outcome.getWin()) {
 				for (Bet bet : outcome.getBets()) {
-					float sum = 0;
-					// create transaction
+					Float sum = (float) 0;
+					TransactionHelper.makeTransaction(bet, sum);
 				}
 			} else {
 				for (Bet bet : outcome.getBets()) {
-					Float sum = bet.getSum();
-					// create transaction
+					Float sum = bet.getSum() * outcome.getCoefficient().floatValue();
+					TransactionHelper.makeTransaction(bet, sum);
 				}
 			}
 		}

@@ -1,9 +1,8 @@
 package juniors.server.core.data.users;
 
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import juniors.server.core.data.bets.Bet;
 
@@ -34,89 +33,56 @@ public class User{
 	 * @param newBankAccount
 	 */
 	public User(String newLogin, String newName, String newSurname, 
-			String newPassword, String newBankAccount){
+			String newPassword, String newBankAccount)
+	{
 		login = newLogin;
 		name = newName;
 		surname = newSurname;
 		bankAccount = newBankAccount;
 		password = newPassword;
                 balance = new Balance();
-                balance.available = 1000f;
+                balance.changeBalance(1000f);
 		
 		bets = new ConcurrentHashMap<Integer, Bet>();
 		lastTimeActive = System.currentTimeMillis();
 	}
 	
-	/**
-	 * 
-	 * @return String login
-	 */
 	public String getLogin(){
 		return login;
 	}
 	
-	/**
-	 * 
-	 * @param String new_login
-	 */
 	public void setLogin(String newLogin){
 		login = newLogin;
 	}
 	
-	/**
-	 * 
-	 * @return String name
-	 */
 	public String getName(){
 		return name;
 	}
 	
-	/**
-	 * 
-	 * @param String new_name
-	 */
 	public void setName(String newName){
 		name = newName;
 	}
 	
-	/**
-	 * 
-	 * @return String surname
-	 */
 	public String getSurname(){
 		return surname;
 	}
 	
-	/**
-	 * 
-	 * @param newSurname
-	 */
 	public void setSurname(String newSurname){
 		surname = newSurname;
 	}
 	
-	/**
-	 * 
-	 * @return String bank_account
-	 */
 	public String getBankAccount(){
 		return bankAccount;
 	}
 	
-	/**
-	 * 
-	 * @param newBankAccount
-	 */
 	public void setBankAccount(String newBankAccount){
 		bankAccount = newBankAccount;
 	}
 
-	
 	public String getPassword() {
 		return password;
 	}
 
-	
 	public void setPassword(String newPassword) {
 		password = newPassword;
 	}
@@ -124,15 +90,12 @@ public class User{
 	/**
 	 * Добавляет новую ставку и резервирует необходимую сумму в балансе
 	 * @param newBet
-	 * @return true - всё добавлено без ошибок.
+	 * @return true - всё добавлено без ошибок. false - ставка уже зарезервирована
 	 */
 	public boolean addBet(Bet newBet) {
-	    if (balance.reserve.containsKey(newBet) || bets.containsKey(newBet.getBetId())){
-	    	return false;
+	    if (!balance.addToReserve(newBet.getBetId(), newBet.getSum())){
+		return false;
 	    }
-	    
-	    balance.available -= newBet.getSum();
-	    balance.reserve.put(newBet.getBetId(), newBet.getSum());
 	    
 	    this.bets.put(newBet.getBetId(), newBet);
 	    return true;
@@ -141,14 +104,14 @@ public class User{
 	/**
 	 * 
 	 * @param betId
-	 * @return
+	 * @return - объект ставки с таким id
 	 */
 	public Bet getBet(int betId){
 	    return bets.get(betId);
 	}
 	
-	public Map<Integer, Bet> getBets() {
-		return  bets;
+	public Collection<Bet> getBets() {
+		return bets.values();
 	}
 	
         /**
@@ -156,7 +119,7 @@ public class User{
 	 * пополняется на sum.
          * 
          * @param bet - ставка, с которой производится работа
-         * @param sum - сумма операции (строго > 0).
+         * @param sum - сумма операции (>= 0)
          * @return - true - операция прошла успешно. False - произошла ошибка 
          */
 	public boolean calculateBet(Bet bet, float sum){
@@ -165,27 +128,23 @@ public class User{
 		return false;
 	    }
 	    
-	    float testSum = balance.reserve.get(1);
-	    Bet testBet = bets.get(1);
 	    // проверка существования такого резерва и ставки 
-	    if (!balance.reserve.containsKey(bet.getBetId()) || !bets.containsKey(bet.getBetId())){
+	    if (!balance.containsReserve(bet.getBetId()) || !bets.containsKey(bet.getBetId())){
 		return false;
 	    }
 	    
             // если ставка проиграна, она просто удаляется
 	    if (sum == 0){
-	    	balance.reserve.remove(bet.getBetId());
+	    	balance.removeFromReserve(bet.getBetId());
 	    	bets.remove(bet.getBetId());
 	    	
-	    	int bbb = bets.size();
 	    	return true;
             }
 	    else { // ставка выиграна
-		balance.available += sum;
-		balance.reserve.remove(bet.getBetId());
-		bets.remove(bet.getBetId());
+		balance.changeBalance(sum);
+		balance.removeFromReserve(bet.getBetId());
+		bets.remove(bet.getBetId());	    
 		
-		int bbb = bets.size();
 		return true;
 	    }
      }
@@ -193,4 +152,32 @@ public class User{
 	public Balance getBalance() {
 		return this.balance;
 	}
+	
+	/**
+	 * Отменяет рассчёт ставки. Меняет баланс и возвращает ставку в резерв
+	 *  
+	 * @param bet 
+	 * @param sum
+	 * @return true - ставка добавлена успешно
+	 */
+	public boolean addBetAgain(Bet bet, float sum){
+	    if (sum > 0){
+		balance.addToReserve(bet.getBetId(), sum);		    
+		this.bets.put(bet.getBetId(), bet);
+		
+		return true;
+	    }
+	    
+	    return false;
+	}
+	
+	/**
+     * Проверяет, банкрот ли пользователь. Если доступные средства меньше 
+     * величины минимальной ставки и ресервы пусты, то пользователь банкрот
+     * 
+     * @return - true - да, банкрот
+     */
+    public boolean isBankrupt(){
+    	return balance.isBankrupt();
+    }
 }

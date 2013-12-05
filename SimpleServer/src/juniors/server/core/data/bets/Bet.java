@@ -5,16 +5,17 @@ import juniors.server.core.data.users.*;
 
 
 /**
+ * Ставка. Все поля неизменяемы. Класс позволяет только получать данные о ставки
+ * Все параметры задаются при иницилизации
  * 
  * @author kovalev
- *
  */
 public class Bet implements Comparable<Bet>{
-	private final User user;
-	private final Outcome outcome;
-	private final Double coefficient;
+	private final User user; // Пользователь, поставивший ставку
+	private final Outcome outcome; // исход, на который поставили
+	private final Double coefficient; // коэффициент, на который производилась ставка
 	private final Float sum; // сумма ставки
-	private final Integer id;
+	private final Integer id; // уникальный идентификатор
 	
 	public Bet(User user, Outcome outcome, double current_coefficient, Float sum){
 		this.user = user;
@@ -70,6 +71,9 @@ public class Bet implements Comparable<Bet>{
 	    return id;
 	}
 
+	/**
+	 * Сравнивается только по id. А он уникален
+	 */
 	@Override
 	public int compareTo(Bet o) {
 		if(o.id == this.id)
