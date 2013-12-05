@@ -110,8 +110,8 @@ public class User{
 	    return bets.get(betId);
 	}
 	
-	public Collection<Bet> getBets() {
-		return bets.values();
+	public Map<Integer, Bet> getBets() {
+		return bets;
 	}
 	
         /**
