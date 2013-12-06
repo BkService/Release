@@ -15,7 +15,7 @@ import juniors.server.core.logic.TimeChecker;
 
 public class GreedyRobot extends AbstractRobot {
 
-	TimeChecker timeChecker;
+	TimeChecker timeChecker = new TimeChecker();
 
 	public GreedyRobot(User user) {
 		super(user);

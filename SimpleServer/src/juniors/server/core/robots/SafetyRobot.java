@@ -14,7 +14,7 @@ import juniors.server.core.logic.TimeChecker;
  */
 
 public class SafetyRobot extends AbstractRobot {
-	TimeChecker timeChecker;
+	TimeChecker timeChecker = new TimeChecker();
 	
 	public SafetyRobot(User user) {
 		super(user);

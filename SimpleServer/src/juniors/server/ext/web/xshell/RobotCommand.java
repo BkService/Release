@@ -1,5 +1,6 @@
 package juniors.server.ext.web.xshell;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,13 +18,36 @@ public class RobotCommand implements ICommand {
 	public String getName() {
 		return "rm";
 	}
-
+	
+	static ArrayList<User> users = new ArrayList<User>();
+	static ArrayList<RobotsManager.Strategy> strategies = new ArrayList<RobotsManager.Strategy>();
+	
 	@Override
 	public String action(HttpServletRequest req, HttpServletResponse res,
 			String... args) {
-		if(args.length > 0)	//FIXME
+		if ((args.length == 1) && (args[0].equals("b"))) {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < users.size(); i++) {
+				sb.append(strategies.get(i) + " " +users.get(i).getLogin() + " " + users.get(i).getBalance().getBalanceValue() + "<br>");
+			}
+			return sb.toString();
+		}
+		if ((args.length > 2) || (args.length <= 0))	
 			return "invalid arguments";
-		Thread stream = new Thread(new RunnerRobots());
+		
+		int count = 1;
+		RobotsManager.Strategy strat = RobotsManager.Strategy.RANDOM;
+		try {
+			count = Integer.parseInt(args[0]);
+		} catch (NumberFormatException ex) {
+			// ok
+		}
+		switch(args[1]) {
+			case "g" : strat = RobotsManager.Strategy.GREEDY; break;
+			case "r" : strat = RobotsManager.Strategy.RANDOM; break;
+			case "s" : strat = RobotsManager.Strategy.SAFETY; break;
+		}
+		Thread stream = new Thread(new RunnerRobots(count, strat));
 		stream.setDaemon(true);
 		stream.start();
 		return "ok";
@@ -31,29 +55,31 @@ public class RobotCommand implements ICommand {
 
 	@Override
 	public String getMan() {
-		return "	rm - command for start robots (Rise of Machines)<br>";
+		return "	rm - command for start robots (Rise of Machines)<br><br>" +
+				"		rm number strategy {g, s, r}<br>" +
+				"			g - greedy<br>" +
+				"			s - safety<br>" +
+				"			r - random<br>";
 	}
 	
 	private class RunnerRobots implements Runnable {
 		
+		int count = 0;
+		RobotsManager.Strategy strategy = null;
 		
+		public RunnerRobots(int n, RobotsManager.Strategy strat) {
+			this.count = n;
+			this.strategy = strat;
+		}
 		
 		@Override
 		public void run() {
-			/* быдло код. по хорошему надо 
-			 * принимать в качестве параметров
-			 * количество юзеров и их стратегию */
-			User[] users1 = new User[1];
-			User[] users2 = new User[1];
-			User[] users3 = new User[1];
-			for(int i = 0; i < 1; ++i) {
-				users1[i] = genUser();
-				users2[i] = genUser();
-				users3[i] = genUser();
+			User[] users = new User[count];
+			for(int i = 0; i < count; ++i) {
+				users[i] = genUser();
 			}
-			(new RobotsManager(1, users1, RobotsManager.Strategy.GREEDY)).runRobots();
-			(new RobotsManager(1, users2, RobotsManager.Strategy.RANDOM)).runRobots();
-			(new RobotsManager(1, users3, RobotsManager.Strategy.SAFETY)).runRobots();
+			
+			(new RobotsManager(count, users, strategy)).runRobots();
 		}
 		
 		private User genUser() {
@@ -66,6 +92,8 @@ public class RobotCommand implements ICommand {
 			User user = new User(login, name, surename, password, bank);
 			if(!as.checkUser(user))
 				as.addUser(user);
+			users.add(DataManager.getInstance().getUser(login));
+			strategies.add(strategy);
 			return DataManager.getInstance().getUser(login);
 		}
 		

@@ -84,4 +84,8 @@ public class RobotsManager {
 			robots[i].run();
 		}
 	}
+	
+	
+	
+	
 }
