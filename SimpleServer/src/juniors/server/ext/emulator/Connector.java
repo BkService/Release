@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import juniors.server.core.data.users.User;
 import juniors.server.core.log.Logs;
 import juniors.server.core.logic.ServerFacade;
 import juniors.server.core.logic.services.AccountsService;
@@ -44,6 +45,7 @@ public class Connector extends HttpServlet {
 			return;
 		}
 		if(cop.equals("makeBet")) {
+			
 			String login = request.getParameter("login");
 			String passwd = request.getParameter("password");
 			String outcome = request.getParameter("outcomeId");
@@ -57,6 +59,8 @@ public class Connector extends HttpServlet {
 				outcomeIdValue = Integer.parseInt(outcome);
 			} catch (NumberFormatException ex) {
 				log.getLogger("connector").warning("fuck... robot get me not carry format number(s)");
+				ous.writeBoolean(false);
+				ous.close();
 				return;
 			}
 			AccountsService as = null;
@@ -66,11 +70,18 @@ public class Connector extends HttpServlet {
 				bs = ServerFacade.getInstance().getServices().BetsService();
 			} catch (NullPointerException ex) {
 				log.getLogger("connector").warning("fuck... server not started");
+				ous.writeBoolean(false);
+				ous.close();
 				return;
 			}
-			if(as.getUser(login) == null || !as.getUser(login).getPassword().equals(passwd))
+
+			if(as.getUser(login) == null || !(as.getHash(passwd).equals(as.getUser(login).getPassword()))) {
+				ous.writeBoolean(false);
+				ous.close();
 				return;
+			}
 			ous.writeBoolean(bs.makeBet(login, outcomeIdValue, sumValue));
+			ous.close();
 		}
 	}
 

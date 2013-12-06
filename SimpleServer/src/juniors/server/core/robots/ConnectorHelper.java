@@ -21,7 +21,7 @@ public class ConnectorHelper {
 	/**
 	 * Address of server.
 	 */
-	private static final String address = "http://localhost:8080/SimpleServer/Connector/";
+	private static final String address = "http://localhost:8080/SimpleServer/Connector?";
 
 	public ConnectorHelper() {
 

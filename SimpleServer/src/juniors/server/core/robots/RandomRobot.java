@@ -1,5 +1,8 @@
 package juniors.server.core.robots;
 
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import juniors.server.core.data.events.Event;
@@ -29,20 +32,29 @@ public class RandomRobot extends AbstractRobot {
 	public Outcome generateOutcome() {
 		try {
 			Random r = new Random();
-			Event[] eventsArray = null;
-			Market[] marketsArray = null;
-			Outcome[] outcomesArray = null;
-			events.entrySet().toArray(eventsArray);
-			Event event = eventsArray[r.nextInt(eventsArray.length)];
+			List<Event> eventsList ;
+			List<Market>  marketsList = null;
+			List<Outcome> outcomesList = null;
+			eventsList = new ArrayList<Event>(events.values()); 
+			Event event = eventsList.get(r.nextInt(eventsList.size()));
 
-			event.getMarketsCollection().toArray(marketsArray);
-			Market market = marketsArray[r.nextInt(marketsArray.length)];
+			
+			
+			marketsList = new ArrayList<Market>(event.getMarketsMap().values());
+			Market market = marketsList.get(r.nextInt(marketsList.size()));
 			curMarket = market;
-			market.getOutcomeCollection().toArray(outcomesArray);
-			return outcomesArray[r.nextInt(outcomesArray.length)];
+			
+			outcomesList = new ArrayList<Outcome>(market.getOutcomeMap().values());
+			return outcomesList.get(r.nextInt(outcomesList.size()));
 			
 		} catch (IllegalArgumentException | NullPointerException e) {
 			return null;
 		}
+	}
+
+
+	@Override
+	public String nameToLogs() {
+		return "--Random Robot : ";
 	}
 }

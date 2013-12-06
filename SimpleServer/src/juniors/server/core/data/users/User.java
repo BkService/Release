@@ -1,5 +1,6 @@
 package juniors.server.core.data.users;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,7 +14,11 @@ import juniors.server.core.data.bets.Bet;
  * @author kovalev
  *
  */
-public class User{
+public class User implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected String login;
 	protected String name;
 	protected String surname;

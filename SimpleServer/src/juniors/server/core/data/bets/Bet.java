@@ -1,5 +1,7 @@
 package juniors.server.core.data.bets;
 
+import java.io.Serializable;
+
 import juniors.server.core.data.markets.*;
 import juniors.server.core.data.users.*;
 
@@ -10,7 +12,7 @@ import juniors.server.core.data.users.*;
  * 
  * @author kovalev
  */
-public class Bet implements Comparable<Bet>{
+public class Bet implements  Comparable<Bet>, Serializable{
 	private final User user; // Пользователь, поставивший ставку
 	private final Outcome outcome; // исход, на который поставили
 	private final Double coefficient; // коэффициент, на который производилась ставка

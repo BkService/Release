@@ -1,6 +1,8 @@
 package juniors.server.core.data.markets;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,7 +11,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author kovalev
  *
  */
-public class Market {
+public class Market implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final Integer marketId;
 	private Map<Integer, Outcome> outcomesMap;
 	private String description;

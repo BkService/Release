@@ -23,7 +23,7 @@ public class AccountsService {
 	public AccountsService() {
 	}
 	
-	private String getHash(String in) {
+	public String getHash(String in) {
 		StringBuffer hexString = new StringBuffer();
 		MessageDigest md;
 		try {

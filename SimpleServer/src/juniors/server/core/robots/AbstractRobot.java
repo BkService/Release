@@ -1,11 +1,13 @@
 package juniors.server.core.robots;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import juniors.server.core.data.DataManager;
 import juniors.server.core.data.events.Event;
 import juniors.server.core.data.markets.Market;
 import juniors.server.core.data.markets.Outcome;
@@ -84,6 +86,7 @@ public abstract class AbstractRobot {
 		delaySec = 60;
 		sum = 100;
 		isStarted = false;
+		hasBets = new HashSet<Market>();
 	}
 	/**
 	 * Stops robot.
@@ -125,11 +128,13 @@ public abstract class AbstractRobot {
 						double sum = getSum();
 						Outcome outcome = generateOutcome();
 						if (makeBet(outcome, sum)) {
-							logger.info("Robot made bet to " + outcome);
+							logger.info(nameToLogs() + " made bet to " + outcome);
 							markMarket();
+						} else {
+							logger.info(nameToLogs() + " had a problem");
 						}
 					} else {
-						logger.info("Robot is died, he is Bunkrot");
+						logger.info(nameToLogs() + "Robot is died, he is Bunkrot");
 						stop();
 					}
 				}
@@ -156,16 +161,17 @@ public abstract class AbstractRobot {
 	public boolean makeBet(Outcome outcome, double sum) {
 		if (outcome != null) {
 			return connector.sendMakeBetRequest(user.getLogin(),
-					user.getName(), outcome.getOutcomeId(), sum);
+					user.getPassword(), outcome.getOutcomeId(), sum);
 		}
 		return false;
 	}
 
 	/**
-	 * Tries to get all events. Sends request to server to get all events.
+	 * Tries to get all events. Gets all events.
 	 */
 	void getEvents() {
-		events = connector.sendGetBetsRequest();
+		
+		events = DataManager.getInstance().getEventsMap();
 	}
 
 	/**
@@ -183,4 +189,7 @@ public abstract class AbstractRobot {
 	 *         want/can to bet.
 	 */
 	public abstract Outcome generateOutcome();
+	
+	//
+	public abstract String nameToLogs();
 }

@@ -43,6 +43,11 @@ public class GreedyRobot extends AbstractRobot {
 			}
 		}
 		return res;
+	}
+
+	@Override
+	public String nameToLogs() {
+		return "--Greedy Robot : ";
 	} 
 	
 }

@@ -1,6 +1,7 @@
 package juniors.server.core.data.events;
 
 //import java.sql.Time;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Date;
@@ -13,7 +14,12 @@ import juniors.server.core.data.markets.*;
  * @author kovalev
  *
  */
-public class Event {
+public class Event implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private HashMap<Integer, Market> markets; // контейнер с маркетами. У каждого маркета свой ID
 	private String description; 	// описание события
 	private final int id; 	// идентефикатор события

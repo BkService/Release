@@ -1,5 +1,8 @@
 package juniors.server.core.robots;
 
+
+
+import juniors.server.core.data.markets.Outcome;
 import juniors.server.core.data.users.User;
 import juniors.server.core.log.Logger;
 import juniors.server.core.log.Logs;
@@ -53,8 +56,10 @@ public class RobotsManager {
 	public RobotsManager(int numberRobots, User[] users, Strategy strategy) {
 		logger.info("Robots manager created with strategy :" + strategy);
 		this.numberRobots = numberRobots;
+		robots = new AbstractRobot[numberRobots] ;
 		this.users = users;
 		this.strategy = strategy;
+		
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package juniors.server.core.data.markets;
 
+import java.io.Serializable;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -11,7 +12,11 @@ import juniors.server.core.data.bets.*;
  * @author kovalev
  *
  */
-public class Outcome {
+public class Outcome implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final Integer outcomeId;
 	private Double coefficient; //всегда больше 1
 	private String description;

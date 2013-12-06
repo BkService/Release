@@ -43,4 +43,9 @@ public class SafetyRobot extends AbstractRobot {
 		return res;
 	}
 
+	@Override
+	public String nameToLogs() {
+		return "--Safety Robot :";
+	}
+
 }
