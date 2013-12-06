@@ -1,6 +1,8 @@
 package juniors.server.core.robots;
 
 import juniors.server.core.data.users.User;
+import juniors.server.core.log.Logger;
+import juniors.server.core.log.Logs;
 
 
 /**
@@ -41,6 +43,7 @@ public class RobotsManager {
 	 */
 	Strategy strategy;
 	
+	Logger logger = Logs.getInstance().getLogger("Robots");
 	
 	/**
 	 * @param numberRobots - number of robots to run. 
@@ -48,7 +51,8 @@ public class RobotsManager {
 	 * @param strategy - strategy for robots.
 	 */
 	public RobotsManager(int numberRobots, User[] users, Strategy strategy) {
-		assert(numberRobots == users.length);
+		logger.info("Robots manager created with strategy :" + strategy);
+		this.numberRobots = numberRobots;
 		this.users = users;
 		this.strategy = strategy;
 	}
@@ -60,7 +64,9 @@ public class RobotsManager {
 	 */
 	
 	public void runRobots() {
+		logger.info("Robots manager runs");
 		for (int i = 0; i < numberRobots; i++) {
+			System.out.println(i);
 			if (strategy == Strategy.SAFETY) {
 				robots[i] = new SafetyRobot(users[i]);
 			}
@@ -73,12 +79,4 @@ public class RobotsManager {
 			robots[i].run();
 		}
 	}
-	
-	/**
-	 * Here can be some statistic for robots.
-	 */
-	public void getStatistics() {
-		
-	}
-	
 }

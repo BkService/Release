@@ -41,16 +41,15 @@ public class RobotCommand implements ICommand {
 			 * количество юзеров и их стратегию */
 			User[] users1 = new User[3333];
 			User[] users2 = new User[3333];
-			User[] users3 = new User[3334];
+			User[] users3 = new User[3333];
 			for(int i = 0; i < 3333; ++i) {
 				users1[i] = genUser();
 				users2[i] = genUser();
 				users3[i] = genUser();
 			}
-			users3[3333] = genUser();
 			(new RobotsManager(3333, users1, RobotsManager.Strategy.GREEDY)).runRobots();
 			(new RobotsManager(3333, users2, RobotsManager.Strategy.RANDOM)).runRobots();
-			(new RobotsManager(3334, users3, RobotsManager.Strategy.SAFETY)).runRobots();
+			(new RobotsManager(3333, users3, RobotsManager.Strategy.SAFETY)).runRobots();
 		}
 		
 		private User genUser() {

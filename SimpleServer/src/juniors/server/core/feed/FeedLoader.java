@@ -132,10 +132,13 @@ public class FeedLoader implements RunnableService {
 			Market curMarket = new Market(-1, "Result");
 			curEvent.addMarket(curMarket);
 			DataManager.getInstance().addOutcome(
-					new Outcome(-1, 1.8, "Team1 win"), curEvent.getEventId(),
+					new Outcome(-1, 1.1, "Team1 win"), curEvent.getEventId(),
 					curMarket.getMarketId());
 			DataManager.getInstance().addOutcome(
-					new Outcome(-2, 1.9, "Team2 win"), curEvent.getEventId(),
+					new Outcome(-2, 100.0, "Team2 win"), curEvent.getEventId(),
+					curMarket.getMarketId());
+			DataManager.getInstance().addOutcome(
+					new Outcome(-3, 100.0, "DRAW"), curEvent.getEventId(),
 					curMarket.getMarketId());
 			needTest = false;
 		}

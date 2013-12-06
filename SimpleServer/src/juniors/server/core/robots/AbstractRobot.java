@@ -10,6 +10,8 @@ import juniors.server.core.data.events.Event;
 import juniors.server.core.data.markets.Market;
 import juniors.server.core.data.markets.Outcome;
 import juniors.server.core.data.users.User;
+import juniors.server.core.log.Logger;
+import juniors.server.core.log.Logs;
 import juniors.server.core.logic.DaemonThreadFactory;
 
 /**
@@ -68,6 +70,8 @@ public abstract class AbstractRobot {
 	 */
 	Market curMarket;
 
+	Logger logger = Logs.getInstance().getLogger("Robots");
+	
 	/**
 	 * Constructs a robot.
 	 * 
@@ -77,9 +81,9 @@ public abstract class AbstractRobot {
 	public AbstractRobot(User user) {
 		connector = new ConnectorHelper();
 		this.user = user;
-		service = Executors.newSingleThreadScheduledExecutor();
 		delaySec = 60;
 		sum = 100;
+		isStarted = false;
 	}
 	/**
 	 * Stops robot.
@@ -114,15 +118,18 @@ public abstract class AbstractRobot {
 				
 				@Override
 				public void run() {
+					logger.info("Robot runs");
 					getEvents();
+					logger.info("Robot get events. Count:" + events.size());
 					if (!user.getBalance().isBankrupt()) {
 						double sum = getSum();
 						Outcome outcome = generateOutcome();
 						if (makeBet(outcome, sum)) {
+							logger.info("Robot made bet to " + outcome);
 							markMarket();
 						}
 					} else {
-						System.out.println("I'm a bunkrot, i die now"); // Change to log
+						logger.info("Robot is died, he is Bunkrot");
 						stop();
 					}
 				}
