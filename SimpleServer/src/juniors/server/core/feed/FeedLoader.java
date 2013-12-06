@@ -123,7 +123,7 @@ public class FeedLoader implements RunnableService {
 		logger.info("start updating");
 		InputStream is = feedWorker.update();
 		if (is != null) {
-			feedParser.parse(is);
+			//feedParser.parse(is);
 		}
 		if (needTest) {
 			for (int i = 0; i < 20; i++) {

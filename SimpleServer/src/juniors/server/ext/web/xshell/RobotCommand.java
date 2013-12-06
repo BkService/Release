@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import juniors.server.core.data.DataManager;
 import juniors.server.core.data.users.User;
 import juniors.server.core.logic.ServerFacade;
 import juniors.server.core.logic.services.AccountsService;
@@ -34,6 +35,9 @@ public class RobotCommand implements ICommand {
 	}
 	
 	private class RunnerRobots implements Runnable {
+		
+		
+		
 		@Override
 		public void run() {
 			/* быдло код. по хорошему надо 
@@ -62,8 +66,7 @@ public class RobotCommand implements ICommand {
 			User user = new User(login, name, surename, password, bank);
 			if(!as.checkUser(user))
 				as.addUser(user);
-			else user = null;
-			return user;
+			return DataManager.getInstance().getUser(login);
 		}
 		
 		private String makeWord(int length, boolean onlyDigits) {

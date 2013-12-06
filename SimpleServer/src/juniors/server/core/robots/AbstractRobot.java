@@ -121,6 +121,7 @@ public abstract class AbstractRobot {
 				
 				@Override
 				public void run() {
+					logger.info(nameToLogs() + " " + user.getBalance().getBalanceValue());
 					getEvents();
 					if (!user.getBalance().isBankrupt()) {
 						double sum = getSum();

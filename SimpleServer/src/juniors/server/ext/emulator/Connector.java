@@ -75,7 +75,7 @@ public class Connector extends HttpServlet {
 				return;
 			}
 
-			if(as.getUser(login) == null || !(as.getHash(passwd).equals(as.getUser(login).getPassword()))) {
+			if(as.getUser(login) == null || !(passwd.equals(as.getUser(login).getPassword()))) {
 				ous.writeBoolean(false);
 				ous.close();
 				return;

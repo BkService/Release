@@ -113,7 +113,7 @@ public class ResultProvider implements RunnableService {
 			if (timeChecker.checkOccurred(event)) {
 				logger.info(event.getEventId() + " " + event.getDescription() + "is started. Generating results...");
 				for (Market market : event.getMarketsMap().values()) {
-					if (!market.isEmpty()) {
+					if (!market.isEmpty() && (market.isFinish())) {
 						Outcome winOutcome = generateResult(market);
 						market.finish(winOutcome);
 						BetsService.evalBets(market);
