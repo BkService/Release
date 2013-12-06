@@ -99,7 +99,7 @@ public class User implements Serializable{
 	 */
 	public boolean addBet(Bet newBet) {
 	    if (!balance.addToReserve(newBet.getBetId(), newBet.getSum())){
-		return false;
+	    	return false;
 	    }
 	    
 	    this.bets.put(newBet.getBetId(), newBet);

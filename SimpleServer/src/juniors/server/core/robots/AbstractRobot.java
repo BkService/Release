@@ -121,9 +121,7 @@ public abstract class AbstractRobot {
 				
 				@Override
 				public void run() {
-					logger.info("Robot runs");
 					getEvents();
-					logger.info("Robot get events. Count:" + events.size());
 					if (!user.getBalance().isBankrupt()) {
 						double sum = getSum();
 						Outcome outcome = generateOutcome();
@@ -134,7 +132,7 @@ public abstract class AbstractRobot {
 							logger.info(nameToLogs() + " had a problem");
 						}
 					} else {
-						logger.info(nameToLogs() + "Robot is died, he is Bunkrot");
+						logger.warning(nameToLogs() + "Robot is died, he is Bunkrot");
 						stop();
 					}
 				}

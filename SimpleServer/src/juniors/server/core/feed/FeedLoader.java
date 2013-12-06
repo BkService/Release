@@ -2,6 +2,7 @@ package juniors.server.core.feed;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -125,21 +126,27 @@ public class FeedLoader implements RunnableService {
 			feedParser.parse(is);
 		}
 		if (needTest) {
-			Event curEvent = new Event(-1,
-					(new Date().getTime()) + 1000 * 60 * 2,
-					"@test Team1 - Team2");
-			DataManager.getInstance().addEvent(curEvent);
-			Market curMarket = new Market(-1, "Result");
-			curEvent.addMarket(curMarket);
-			DataManager.getInstance().addOutcome(
-					new Outcome(-1, 1.1, "Team1 win"), curEvent.getEventId(),
-					curMarket.getMarketId());
-			DataManager.getInstance().addOutcome(
-					new Outcome(-2, 100.0, "Team2 win"), curEvent.getEventId(),
-					curMarket.getMarketId());
-			DataManager.getInstance().addOutcome(
-					new Outcome(-3, 100.0, "DRAW"), curEvent.getEventId(),
-					curMarket.getMarketId());
+			for (int i = 0; i < 20; i++) {
+				Event curEvent = new Event(-i - 1,
+						(new Date().getTime()) + 1000 * 60 * i,
+						"@test"+ i + " Team1 - Team2");
+				DataManager.getInstance().addEvent(curEvent);
+				Market curMarket = new Market(- i - 1, "Result");
+				curEvent.addMarket(curMarket);
+				Random r = new Random();
+				double d1 =  r.nextDouble();
+				double d2 = (1.0 - d1) * r.nextDouble();
+				double d3 = (1.0 - d2 - d1);
+				DataManager.getInstance().addOutcome(
+						new Outcome(-3 * i - 1, (d1 == 0 ? 10000 : 1.0 / d1), "Team1 win"),
+						curEvent.getEventId(), curMarket.getMarketId());
+				DataManager.getInstance().addOutcome(
+						new Outcome(-3 * i - 2, (d2 == 0 ? 10000 : 1.0 / d2), "Team2 win"),
+						curEvent.getEventId(), curMarket.getMarketId());
+				DataManager.getInstance().addOutcome(
+						new Outcome(-3 * i - 3, (d3 == 0 ? 10000 : 1.0 / d3), "Draw"), curEvent.getEventId(),
+						curMarket.getMarketId());
+			}
 			needTest = false;
 		}
 		logger.info("finish updating");
