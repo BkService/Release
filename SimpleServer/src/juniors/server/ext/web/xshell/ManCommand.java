@@ -4,16 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class ManCommand implements ICommand {
-
-	private static final String DEFAULT_MAN = "		Manual of the wshell interpretator. Commands:<br>" +
-			"	clear 		- delete history.<br>" +
-			"	feedloader 	- work with the feed loader<br>" +
-			"	info		- command for get information about server<br>" +
-			"	test		- command for get statistic of connections and users<br>" +
-			"	user		- command for create, update and remove users<br>" +
-			"	events		- command for show information about events<br>" +
-			"	exit 		- exit from webshell<br>" +
-			"	man		- show manual about command";
 	
 	private static final String MANUAL_FOR_MAN = "		man - command for show manual about command<br><br>" +
 			"	SYNTAX<br>" +
@@ -29,6 +19,8 @@ public class ManCommand implements ICommand {
 			"		SYNTAX<br>" +
 			"			clear";
 
+	
+	
 	@Override
 	public String getName() {
 		return "man";
@@ -36,16 +28,28 @@ public class ManCommand implements ICommand {
 
 	@Override
 	public String action(HttpServletRequest req, HttpServletResponse res, String... args) {
-		if(args.length == 0)
-			return DEFAULT_MAN;
-		String description = "";
 		CommandManager cm = CommandManager.getInstance();
+		if(args.length == 0) {
+			StringBuilder retstr = new StringBuilder();
+			for(String s : cm.getCommandsDescriptions()) {
+				retstr.append("	");
+				retstr.append(s);
+				retstr.append("<br>");
+			}
+			retstr.append("		about 		- get info about terminal.<br>");
+			retstr.append("		clear 		- delete history.<br>");
+			retstr.append("		exit 		- exit from webshell");
+			return retstr.toString();
+		}
+		String description = "";
 		for(String cmd : args) {
 			if(cmd.equals("exit")) {
-				return EXIT_MAN;
+				description += EXIT_MAN;
+				continue;
 			}
 			if(cmd.equals("clear")) {
-				return CLEAR_MAN;
+				description += CLEAR_MAN;
+				continue;
 			}
 			ICommand command = cm.getCommand(cmd);
 			if(command == null) {
@@ -65,5 +69,10 @@ public class ManCommand implements ICommand {
 	@Override
 	public String getMan() {
 		return MANUAL_FOR_MAN;
+	}
+
+	@Override
+	public String getShortDescription() {
+		return "show manual about command";
 	}
 }

@@ -10,25 +10,25 @@ public class TestCommand implements ICommand {
 
 	private static final String manual = "	test - command for monitoring system<br><br>" +
 			"	SYNTAX<br>" +
-			"		test type [-time]<br><br>" +
+			"		test -type [-time]<br><br>" +
 			"	OPTIONS<br>" +
 			"		type -time (autorization): <br>" +
-			"			guests -h :count success sign in system on hour<br>" +
-			"			guests -d :count success sign in system on day<br>" +
-			"			guests -m :count success sign in system on month<br>" +
+			"			-guests -h :count success sign in system on hour<br>" +
+			"			-guests -d :count success sign in system on day<br>" +
+			"			-guests -m :count success sign in system on month<br>" +
 			"		type -time (connections)<br>" +
-			"			connect -s :count connections by second<br>" +
-			"			connect -m :count connections by minute<br>" +
-			"			connect -h :count connections by hour<br>" +
-			"			connect -d :count connections by day<br>" +
+			"			-connect -s :count connections by second<br>" +
+			"			-connect -m :count connections by minute<br>" +
+			"			-connect -h :count connections by hour<br>" +
+			"			-connect -d :count connections by day<br>" +
 			"		type <br>" +
-			"			regusers - get count users, which registered in system<br> " +
-			"			users - get count users, which are in system now<br>" +
-			"			bets - get count bets, which users making by second<br><br>" +
+			"			-regusers - get count users, which registered in system<br> " +
+			"			-users - get count users, which are in system now<br>" +
+			"			-bets - get count bets, which users making by second<br><br>" +
 			"	EXAMPLES<br>" +
-			"		test connect -m<br>" +
-			"		test guests -h<br>" +
-			"		test users";
+			"		test -connect -m<br>" +
+			"		test -guests -h<br>" +
+			"		test -users";
 	private static final String INVALID_ARGS = "test: invalid arguments. read manual for help";
 	
 	@Override
@@ -46,7 +46,7 @@ public class TestCommand implements ICommand {
 		}
 		
 		switch(args[0]){
-			case "guests": {
+			case "-guests": {
 				if(args.length != 2)
 					return INVALID_ARGS;
 				if(args[1].equals("-h"))
@@ -57,7 +57,7 @@ public class TestCommand implements ICommand {
 					return "test: logins per month: " + servs.getStatisticService().getCountLoginsPerMonth();
 				return INVALID_ARGS;
 			}
-			case "connect" : {
+			case "-connect" : {
 				if(args.length != 2)
 					return INVALID_ARGS;
 				if(args[1].equals("-s"))
@@ -70,13 +70,13 @@ public class TestCommand implements ICommand {
 					return "test: connect per day: " + servs.getStatisticService().getCountRequestsPerDay();
 				return INVALID_ARGS;
 			}
-			case "regusers" : {
+			case "-regusers" : {
 				return "test: storage users in system: " + servs.getStatisticService().getCountsUsers();
 			}
-			case "users" : {
+			case "-users" : {
 				return "option [users] in development";
 			}
-			case "bets" : {
+			case "-bets" : {
 				return "test: bets per second: " + servs.getStatisticService().getCountBetsPerSeconds();
 			}
 			default : 
@@ -87,6 +87,11 @@ public class TestCommand implements ICommand {
 	@Override
 	public String getMan() {
 		return manual;
+	}
+
+	@Override
+	public String getShortDescription() {
+		return "command for monitoring any parameters";
 	}
 
 }

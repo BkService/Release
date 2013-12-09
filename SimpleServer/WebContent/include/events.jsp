@@ -11,13 +11,34 @@
 		EventService srv = ServerFacade.getInstance().getServices().getEventService();
 		Event[] events = new Event[srv.getEventsMap().size()];
 		events = srv.getEventsMap().toArray(events);
-		if(events == null || events.length == 0){
+		String currenPage = request.getParameter("numpage");
+		int numpage = 0;
+		if(currenPage == null || currenPage.isEmpty())
+			numpage = 1;
+		else {
+			try {
+				numpage = Integer.parseInt(currenPage);
+			} catch (Exception e) {
+				numpage = 1;
+			}
+		}
+		int all = events.length;
+		int maxOnPage = 5;
+		int onPage = (all <= maxOnPage) ? all : maxOnPage;
+		int coutPages = all / onPage;
+		if(all % maxOnPage > 0) coutPages++;
+		if(numpage > coutPages)
+			numpage = 1;
+		if(coutPages == numpage)
+			onPage = all - (numpage - 1)*maxOnPage;
+
+		if(events == null || all == 0){
 		%>
 			<br><p style="font-size: x-large; color: blue;">No events</p>		
 		<%
 			return;
 		}
-		for(int i = 0; i < events.length; ++i) {
+		for(int i = (numpage - 1)*maxOnPage; i < (numpage - 1)*maxOnPage + onPage; ++i) {
 			if(new Date().getTime() > events[i].getStartTime())
 				continue;
 			/* print event */
@@ -59,7 +80,16 @@
 			}
 		}
 	%>
-<br><br>
+<br><br><div style="margin-left: 200px;">
+	<%
+		for(int i = 1; i <= coutPages; ++i) {
+			String num = (i == numpage) ? ("<font size=\"8\">" + i + "</font>") : ("" + i);
+			%>
+				_ <a href="/SimpleServer/cabinet.jsp?numpage=<%= i %>"><%= num %></a> _
+			<%
+		}
+	%></div>
+	<br><br>
 </div>
 <br><br>
 

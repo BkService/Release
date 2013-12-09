@@ -19,20 +19,21 @@ public class WebShell extends HttpServlet {
 			throws ServletException, IOException {
 		String inputLine = request.getParameter("command");
 		String path = "/console.jsp";
-		String oldLines = (String)request.getSession().getAttribute("shell");
-		String br = (oldLines == "") ? oldLines : "<br>";
-		String resultCommand = "";
-		oldLines = oldLines + br  + "admin@simpleserver ~ $ " + inputLine;
+		String history = (String)request.getSession().getAttribute("shell");
+		if(history != null) 
+			history.replaceAll("^\\s+<br>", "");
+		Boolean br = true;
+		request.getSession().setAttribute("br", br);
+		history = (history == null || history.isEmpty()) ? "" : (history + "<br>");
+		String resultCommand = history + "admin@simpleserver ~ $ " + inputLine ;
 		/* SYSTEMS COMMANDS. Integrated in servlet */
 		if(inputLine.equals("exit")) {
 			path = "/LogoutHandler";
 		} else { 
 			if(inputLine.equals("clear")) { 
-				oldLines="";
+				resultCommand="";
 			} else {
-				if(inputLine.equals("")) {
-					resultCommand = inputLine;
-				} else {
+				if(!inputLine.equals("")) {
 					/* EXTERNAL COMMANDS. Integrated in system of commands */
 					String args[] = inputLine.split("\\s+");
 					inputLine = args[0];
@@ -40,14 +41,13 @@ public class WebShell extends HttpServlet {
 					CommandManager cmdManager = CommandManager.getInstance();
 					ICommand command = cmdManager.getCommand(inputLine);
 					if(command != null)
-						resultCommand += "<pre>" + command.action(request, response, args) + "</pre>";
+						resultCommand += "<br><br><span style=\"white-space: pre;\">" + command.action(request, response, args) + "</span><br>";
 					else
-						resultCommand = "<br>Command '" + inputLine + "' not found";
-					oldLines += resultCommand;
+						resultCommand += "<br><br>Command '" + inputLine + "' not found<br>";
 				}
 			}
 		}
-		request.getSession().setAttribute("shell", oldLines);
+		request.getSession().setAttribute("shell", resultCommand);
 		request.getRequestDispatcher(path).forward(request, response);
 	}
 
@@ -60,30 +60,4 @@ public class WebShell extends HttpServlet {
 			throws ServletException, IOException {
 		service(request, response);
 	}
-
-	protected String execute(String cmd, HttpServletRequest request) {
-		String result = "<br>command not found. input 'man' for get help";
-		if(cmd.equals("info")) {
-			result = "<br>Server name: " + request.getServerName() + ". " +
-					"Server port: " + request.getServerPort() + ". " +
-					" Scheme: " + request.getScheme();
-		}
-		if(cmd.equals("block")) {
-			result = "<br><div id=\"g" +getNextId()+ "\" class=\"grInfo\">" +
-					"description graphic. Some graphic will be here." +
-					"<div class=\"close\" onclick=\"closeGr('g"+ getBack() +"');\">-</div>" +
-					"<br><img class=\"graphic\" href=\"/GrServlet?type=test\" />" +
-					"</div><br>";
-		}
-		return result;
-	}
-
-	int nextId = 1;
-	private int getNextId() {
-		return nextId++;
-	}
-	private int getBack() {
-		return this.nextId - 1;
-	}
-
 }

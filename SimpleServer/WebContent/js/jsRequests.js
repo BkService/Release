@@ -6,14 +6,14 @@ function switchPage(data) {
 	/* создаем форму, добавляем в нее "имя" необходимой страницы
 	 * и сабмитим форму. Обработчик - SwitchHandler сервлет */
 	var form = document.createElement("form");
-		form.setAttribute("method", "post");
-		form.setAttribute("action", "/SimpleServer/SwitchHandler");
-	
+	form.setAttribute("method", "post");
+	form.setAttribute("action", "/SimpleServer/SwitchHandler");
+
 	var field = document.createElement("input");
-		field.setAttribute("name", "target");
-		field.setAttribute("type", "hidden");
-		field.setAttribute("value", data.id);
-	
+	field.setAttribute("name", "target");
+	field.setAttribute("type", "hidden");
+	field.setAttribute("value", data.id);
+
 	form.appendChild(field);
 	document.body.appendChild(form);
 	form.submit();
@@ -78,8 +78,8 @@ function checkAndCalc(value) {
 	}
 }
 
-// Функция проверки введенной величины ставки
-// Ставка должна быть целым числом и не превышать баланса
+//Функция проверки введенной величины ставки
+//Ставка должна быть целым числом и не превышать баланса
 function checkAndSend() {
 	var makeBetSpan = document.getElementById('bets');
 	var balance = document.getElementById('ubalance').innerHTML;
@@ -117,7 +117,7 @@ function checkAndSend() {
 	});
 }
 
-// Функция для получения обновленного баланса от текущего юзера
+//Функция для получения обновленного баланса от текущего юзера
 function updateBalance(){
 	// создаем ассинхронный запрос к серверу
 	var loginOnPage = document.getElementById('loginOnPage').value;
@@ -134,7 +134,7 @@ function updateBalance(){
 	});
 }
 
-// функция сокрытия формы создания ставок
+//функция сокрытия формы создания ставок
 function hideFormMakeBet() {
 	// убираем форму и слой блокировки
 	document.getElementById('formMakeBet').setAttribute("class", "defaultl");
@@ -155,7 +155,7 @@ function showAbout() {
 		document.getElementById('aboutPanel').setAttribute("class", "naboutPanel");
 }
 
-// не используется (!!!)		//FIXME
+//не используется (!!!)		//FIXME
 function showChild() {
 	var count = document.getElementsByName('market').length;
 	var elements = document.getElementsByName('market');
@@ -173,22 +173,92 @@ function showc(marker) {
 	var idr = new RegExp('^c'+ num +'+$');
 	for(var i = 0; i < countc; ++i) {
 		if(idr.test(coeffs[i].id))
-		   if(coeffs[i].getAttribute("class") == "cell")
-			  coeffs[i].setAttribute("class", "cellshow");
-		   else
-			   coeffs[i].setAttribute("class", "cell");
+			if(coeffs[i].getAttribute("class") == "cell")
+				coeffs[i].setAttribute("class", "cellshow");
+			else
+				coeffs[i].setAttribute("class", "cell");
 	}
 }
 
-// Функция для отправки введенной команды в wsh
+//****************************************************
+//*******     history of commands in web shell *******
+//*******    this framework not work in chrome  ******
+//****************************************************
+
+var size = 10;
+var cmds = new Array(size);
+
+var counter = 0;
+var storage = globalStorage[document.domain];
+
+function put(cmd) {
+	try {
+		if(cmd.length == 0 || cmd == null)
+			return;
+		cmds = (storage['history'].toString()).split(",");
+		for(var i = size - 1; i > 0 ; --i) {
+			cmds[i] = cmds[i - 1];
+		}
+		cmds[0] = cmd;
+		storage['history'] = cmds.join(",");
+	} catch(e) {
+		/* error */
+	}
+	counter = 0;
+}
+
+function get() {
+	cmds = String(storage['history']).split(",");
+	var res = cmds[counter];
+	if(res !== undefined) {
+		counter++;
+		return res;
+	}
+	return '';
+}
+
+function getBack() {
+	if(counter == 0)
+		return '';
+	cmds = String(storage['history']).split(",");
+	return cmds[--counter];
+}
+//**************************************************
+//**************************************************
+
+
+//Функция для отправки введенной команды в wsh
 function send(event){
 	event = event || window.event;
 	// при нажатии enter
 	if(event.keyCode == 13) {
-		var cmd = document.getElementById('commandline').value;
-		if(cmd != null && cmd.length > 0)
-			oldcmd = cmd;
-		document.getElementById('cmdfrm').submit();
+		var command = document.getElementById('commandline').value;
+		put(command);
+		if(command == 'about') {
+			alert('Version terminal: 1.2.0. It compatible with wshell 2.2.0 and up.');
+			document.getElementById('commandline').value = '';
+			return;
+		} else {
+			var frm = document.createElement('form');
+			frm.setAttribute("method", "post");
+			frm.setAttribute("action", "/SimpleServer/xshell");
+			var field = document.createElement("input");
+			field.setAttribute("name", "command");
+			field.setAttribute("type", "hidden");
+			field.setAttribute("value", command);
+			frm.appendChild(field);
+			document.body.appendChild(frm);
+			frm.submit();
+		}
+	}
+	var result = '';
+	if((event.keyCode || event.which) == 38) {
+		result = get();
+		document.getElementById('commandline').value = result;
+	}
+	if((event.keyCode || event.which) == 40) {
+		result = getBack();
+		document.getElementById('commandline').value = result;
 	}
 }
 
@@ -198,6 +268,7 @@ function closeGr(divId) {
 	document.getElementById(divId).style.margin='0px';
 	document.getElementById('commandline').focus();
 }
+
 
 
 

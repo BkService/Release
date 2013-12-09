@@ -13,11 +13,6 @@ import juniors.server.core.logic.services.EventService;
 import juniors.server.core.logic.services.Services;
 
 public class EventsCommand implements ICommand {
-	
-	/*
-	 * FIXME
-	 * not work events -tc
-	 */
 
 	private static final String manual = "		events - command for show events<br><br>" +
 			"	SYNTAX<br>" +
@@ -154,12 +149,15 @@ public class EventsCommand implements ICommand {
 		
 		return result;
 	}
-	
-	
 
 	@Override
 	public String getMan() {
 		return manual;
+	}
+
+	@Override
+	public String getShortDescription() {
+		return "command for display info about all events";
 	}
 
 }

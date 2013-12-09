@@ -7,4 +7,5 @@ public interface ICommand {
 	String getName();
 	String action(HttpServletRequest req, HttpServletResponse res, String ... args);
 	String getMan();
+	String getShortDescription();
 }

@@ -20,9 +20,12 @@ public class WriteCommand implements ICommand {
 		String result = "added";
 		if(args.length < 1)
 			return "Invalid arguments";
-		for(String s : args) {
-			log.getLogger("shell").info(s);
+		StringBuilder s = new StringBuilder();
+		for(String str : args) {
+			s.append(str);
+			s.append(" ");
 		}
+		log.getLogger("shell").info(s.toString());
 		return result;
 	}
 
@@ -31,5 +34,10 @@ public class WriteCommand implements ICommand {
 		return "	write [args] - command for write messages to log<br><br>" +
 				"	OPTIONS <br>" +
 				"		args - words, which writes to log<br>";
+	}
+
+	@Override
+	public String getShortDescription() {
+		return "command forr write message to log";
 	}
 }

@@ -13,7 +13,7 @@
 <body onload="document.getElementById('commandline').focus();">
 <div class="main">
 	<div class="head">
-		<u style="margin-left: 10px;">WebShell v 1.1.0</u>
+		<u style="margin-left: 10px;">Web Terminal v 1.2.0</u>
 		<div class="close">
 			<a href="/SimpleServer/LogoutHandler">X</a>
 		</div>
@@ -27,17 +27,19 @@
 		}
 		String startLine = "admin@simpleserver ~ $";
 		String history = (String)ses.getAttribute("shell");
-		if(history == null) {
+	    Boolean br = (Boolean)ses.getAttribute("br");
+	    if(br == null) br = true;
+		if(history == null || history.isEmpty() || Pattern.matches("\\s+", history)) {
 			history = "";
 			ses.setAttribute("shell", "");
+			br = false;
 		}
 	%>
-	<%= Pattern.matches("^null", history) ? "" : history %>
-	<form id="cmdfrm" action="/SimpleServer/xshell" method="post">
-		<%= startLine %> <input autocomplete="off" id="commandline" type="text" 
-							name="command" class="xshell" onkeypress="send(event);"/> 
+	<%= (history == null || history.isEmpty()) ? "" : history %>
+	<%= br ? "<br>" : "" %>
+	<%= startLine %> <input autocomplete="off" id="commandline" type="text" name="command" class="xshell" onkeypress="send(event);"/> 
 							
-	</form>
+	
 </div>
 </body>
 </html>

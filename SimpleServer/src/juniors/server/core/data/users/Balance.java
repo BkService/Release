@@ -2,7 +2,6 @@ package juniors.server.core.data.users;
 
 import juniors.server.core.data.Data;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,12 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author kovalev
  *
  */
-public class Balance implements Serializable {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	// сумма на счёте, доступная для операций
+public class Balance {
+    // сумма на счёте, доступная для операций
     private float available;
     // хранит ID ставки и ёё сумму
     private Map<Integer, Float> reserve;

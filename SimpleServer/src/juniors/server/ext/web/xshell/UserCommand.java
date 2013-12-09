@@ -64,7 +64,7 @@ public class UserCommand implements ICommand {
 			String... args) {
 		
 		
-		return "Command 'user' in development";
+		return "Command 'user' already not used";
 	}
 
 	@Override
@@ -217,6 +217,11 @@ public class UserCommand implements ICommand {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String getShortDescription() {
+		return "command not used. see 'rm'";
 	}
 	
 	

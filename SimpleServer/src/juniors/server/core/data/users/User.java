@@ -1,6 +1,5 @@
 package juniors.server.core.data.users;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,11 +13,7 @@ import juniors.server.core.data.bets.Bet;
  * @author kovalev
  *
  */
-public class User implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class User{
 	protected String login;
 	protected String name;
 	protected String surname;
@@ -99,7 +94,7 @@ public class User implements Serializable{
 	 */
 	public boolean addBet(Bet newBet) {
 	    if (!balance.addToReserve(newBet.getBetId(), newBet.getSum())){
-	    	return false;
+		return false;
 	    }
 	    
 	    this.bets.put(newBet.getBetId(), newBet);

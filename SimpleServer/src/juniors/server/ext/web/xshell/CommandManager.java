@@ -36,4 +36,26 @@ public class CommandManager {
 		}
 		return null;
 	}
+	
+	public String[] getCommandsDescriptions() {
+		String[] cmds = new String[commands.size() - 1];
+		for(int i = 0; i < commands.size() - 1; ++i) {
+			cmds[i] = "	" + commands.get(i).getName() + "		- " + commands.get(i).getShortDescription();
+		}
+		return cmds;
+	}
+	
+	private static String NAME_SHELL = "WebShell (C) Juniors Simple Server";
+	private static String VERSION_SHELL = "2.2.0";
+	private static String DATE_BUILD = "8 Dec 2013";
+	private static String VERSION_BUILD = "00073";
+	private static final String AUTHOR = "Pismak Alexey";
+	
+	public String aboutHTML() {
+		return "info: wsh: " + NAME_SHELL + "<br><br>" +
+				"	Version: " + VERSION_SHELL + "<br>" +
+				"	Build : " + VERSION_BUILD + "<br>" +
+				"	Date : " + DATE_BUILD + "<br>" +
+				"	Author: " + AUTHOR;
+	}
 }

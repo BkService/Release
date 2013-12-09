@@ -3,11 +3,13 @@ package juniors.server.ext.web.xshell;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import juniors.server.core.logic.ServerFacade;
+
 public class InfoCommand implements ICommand {
 
 	private static final String manual = "	info - command for get information about server and WebShell<br><br>" +
 			"	SYNTAX<br>" +
-			"		info [[shell] | [server [port] [host] [protocol]]]<br><br>" +
+			"		info [[-shell] | [-server [-port] [-host] [-protocol]]]<br><br>" +
 			"	OPTIONS<br>" +
 			"		[shell] - get info about WeShell <br>" +
 			"		[server] - get information about server. The option have next keys:<br>" +
@@ -25,20 +27,22 @@ public class InfoCommand implements ICommand {
 
 	@Override
 	public String action(HttpServletRequest req, HttpServletResponse res, String... args) {
-		if(args.length == 0)
-			return "info: check ping... OK";
+		if(args.length == 0) {
+			ServerFacade sf = ServerFacade.getInstance();
+			if(sf.getStatusServer())
+				return "info: check ping... OK";
+			else
+				return "info: services ";
+		}
 		if(args.length > 4)
 			return INVALID_ARGS;
-		if(args[0].equals("shell")) {
+		if(args[0].equals("-shell")) {
 			if(args.length != 1) 
 				return INVALID_ARGS;
-			return "info: wsh: WebShell (C) Juniors Simple Server<br><br>" +
-					"	Version	: 2.0.0<br>" +
-					"	Author	: Alexey Pismak<br>" +
-					"	wsh	: Nov 2013";
+			return CommandManager.getInstance().aboutHTML();
 		}
 		String result = "";
-		if(args[0].equals("server")) {
+		if(args[0].equals("-server")) {
 			if(args.length == 1)
 				return "info: <br>" +
 				"	host: " + req.getServerName() + " <br>" +
@@ -47,15 +51,15 @@ public class InfoCommand implements ICommand {
 			result += "info: <br>";
 			for(int i = 1; i < args.length; ++i) {	
 				boolean carryFlag = false;
-				if(args[i].equals("host")) {
+				if(args[i].equals("-host")) {
 					result += "	host: " + req.getServerName() + " <br>";
 					carryFlag = true;
 				}
-				if(args[i].equals("port")) {
+				if(args[i].equals("-port")) {
 					result += "	port: " + req.getServerPort() + " <br>";
 					carryFlag = true;
 				}
-				if(args[i].equals("protocol")) {
+				if(args[i].equals("-protocol")) {
 					result += "	protocol: " + req.getScheme() + " <br>";
 					carryFlag = true;
 				}
@@ -71,6 +75,11 @@ public class InfoCommand implements ICommand {
 	@Override
 	public String getMan() {
 		return manual;
+	}
+
+	@Override
+	public String getShortDescription() {
+		return "command for get info about simpleserver and shell";
 	}
 
 }

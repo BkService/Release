@@ -23,7 +23,7 @@ public class PrintCommand implements ICommand {
 	@Override
 	public String action(HttpServletRequest req, HttpServletResponse res,
 			String... args) {
-		if(args.length > 2)
+		if(args.length > 2 || args.length == 1)
 			return INV;
 		if(args.length > 0)
 			if(args[0].equals("-n")) {
@@ -40,6 +40,7 @@ public class PrintCommand implements ICommand {
 			result.append(x.getMessage());
 			result.append("<br>");
 		}
+		n = 10;
 		return result.toString();
 	}
 
@@ -48,6 +49,11 @@ public class PrintCommand implements ICommand {
 		return "	print - command for print items from log<br><br>" +
 				"	OPTIONS<br>" +
 				"		-n number - set count items, which printed from log<br>";
+	}
+
+	@Override
+	public String getShortDescription() {
+		return "command for show items from logger";
 	}
 
 }
