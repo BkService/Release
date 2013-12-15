@@ -23,5 +23,11 @@ public class BalanceCommand implements ICommand{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getShortDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

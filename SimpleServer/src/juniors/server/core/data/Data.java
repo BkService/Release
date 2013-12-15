@@ -173,6 +173,11 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 		if(currentOutcome == null)
 			logger.warning("DATA: fail get outcome!");
 		
+		// соответствует ли величина ставки условиям
+		if (currentOutcome.getMaxBet() < sum || MIN_BET > sum){
+			return null;
+		}
+		
 		// если коеффициенты не совпадают
 		/*
 		 * if (Math.abs(currentOutcome.getCoefficient() - coefficient) >

@@ -18,6 +18,7 @@ public class Outcome {
 	private boolean isWin; // true - исход победил
 	private boolean isFinished; // маркет закончился
 	private Set<Bet> bets; // контейнер со ставками на данный исход
+	private float maxBet = 1000; // максимальная возможная ставка
 	
 	public Outcome(Integer id){
 		outcomeId = id;
@@ -132,6 +133,23 @@ public class Outcome {
 
 	public boolean isWin() {
 	    return isWin;
+	}
+	
+	
+	/**
+	 * 
+	 * @param newMaxBet
+	 * @return - прошлая максимально возможная ставка
+	 */
+	public float setMaxBet(float newMaxBet){
+		float lastMaxBet = maxBet;
+		maxBet = newMaxBet;
+		
+		return lastMaxBet;
+	}
+	
+	public float getMaxBet(){
+		return maxBet;
 	}
 }
 
