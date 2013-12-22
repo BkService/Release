@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import juniors.server.core.data.bets.*;
-import juniors.server.core.data.coefficentcorrecter;
+import juniors.server.core.data.coefficientcorrecter.CoefficientCorrecter;
 
 /**
  * Исход маркета. Содержит описание, контейнер со ставками на этот исход.
