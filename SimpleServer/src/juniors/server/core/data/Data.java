@@ -2,6 +2,7 @@ package juniors.server.core.data;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Random;
 
 
 import juniors.server.core.data.events.*;
@@ -421,25 +422,34 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 		int marketId = 11;
 		int outcomeId = 12;
 		double coefficient = 1.5d;
-		float sum = 10f;
+		double secondCoefficient = 1 / (1 - 1 / coefficient);
+		float sum = 700f;
 		Bookmaker bookmeker = data.getBookmaker();
+		Random rand = new Random();
 
 		Event e = new Event(eventId, startTime);
 		Market m = new Market(marketId);
 		Outcome o = new Outcome(outcomeId, coefficient);
-		User user = data.getUser("login");
+		Outcome o1 = new Outcome(outcomeId + 1, secondCoefficient);
+		String login = "testLogin";
+		User user = data.getUser(login);
 
 		data.addEvent(e);
 		e.addMarket(m);
 		data.addOutcome(o, e.getEventId(), m.getMarketId());
-
-		//boolean bool = data.makeBet(user.getLogin(), o.getOutcomeId(), sum, o.getCoefficient());
-
-		Bet bet = (Bet) user.getBet(1);
-
-		boolean tran = data.makeTransact(user.getLogin(), bet.getBetId(), 15);
+		data.addOutcome(o1, eventId, marketId);
 		
+		// ставится 700 на второй исход
+		data.makeBet(user.getLogin(), o.getOutcomeId() + 1, sum, o.getCoefficient());		
 		
+		// ставится 7000 на первый исход
+		for (int i = 0; i < 10; i++){
+			String tempLogin = new String(String.valueOf(rand.nextInt()));
+			data.makeBet(tempLogin, outcomeId, 700);
+		}
+		
+		double testC = o.getCoefficient();
+		double testSecondC = o1.getCoefficient();
 		
 	}
 	

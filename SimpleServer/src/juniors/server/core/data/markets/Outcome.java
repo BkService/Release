@@ -24,6 +24,9 @@ public class Outcome {
 	private float sumBets = 0f;	// сумма всех ставок на исход. пересчитывается автоматически
 	private float paySumIfWin = 0f;	// сумма, которую выплатим в случае выигрыша исхода
 	
+	private final float maxMaxBet = 1000000f;	// максимально возможная максимальная ставка
+	private final float minMaxBet = 15f;	// минимально возможная максимальная ставка
+	
 	public Outcome(Integer id){
 		outcomeId = id;
 		coefficient = 1.0;
@@ -63,6 +66,7 @@ public class Outcome {
 			return false;
 		}*/
 		
+		// ожидание разблокировки возможности менять коэффициенты
 		market.waitUnlockedCoefficientCorrect();
 		coefficient = newCoefficient;
 		return true;
@@ -157,6 +161,16 @@ public class Outcome {
 	 * @return - прошлая максимально возможная ставка
 	 */
 	public float setMaxBet(float newMaxBet){
+		// если ставка больше максимально большой или меньше минимальной, 
+		// то приравнивается к заданным значениям
+		if (newMaxBet > maxMaxBet){
+			newMaxBet = maxMaxBet;
+		}
+		if (newMaxBet < minMaxBet){
+			newMaxBet = minMaxBet;
+		}
+		
+		
 		float lastMaxBet = maxBet;
 		maxBet = newMaxBet;
 		
