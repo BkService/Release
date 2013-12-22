@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import juniors.server.core.data.users.User;
 import juniors.server.core.log.Logs;
 import juniors.server.core.logic.ServerFacade;
 import juniors.server.core.logic.services.AccountsService;

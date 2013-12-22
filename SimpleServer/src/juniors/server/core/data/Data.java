@@ -433,11 +433,11 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 		Bet bet = (Bet) user.getBet(1);
 
 		boolean tran = data.makeTransact(user.getLogin(), bet.getBetId(), 15);
-
-
-
+		
+		
+		
 	}
-
+	
 }
 
 
