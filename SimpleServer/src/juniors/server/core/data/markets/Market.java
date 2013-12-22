@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Маркет. Содержит контейнер с исходами, описание. Имеет уникальный идентификатор
+ * 
  * @author kovalev
  *
  */
