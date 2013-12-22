@@ -15,6 +15,7 @@ public class Market {
 	private Map<Integer, Outcome> outcomesMap;
 	private String description;
 	private boolean isFinished;
+	private float sumBets = 0;	// общая сумма всех ставок на маркет
 	//private long finishTime; 
 	
 	public Market(Integer id){
@@ -122,4 +123,18 @@ public class Market {
             return ans;
         }
         
+        /**
+         * Добавить сумму ставки
+         * @param sumBet
+         */
+        void addSumBet(float sumBet){
+        	sumBets += sumBet;
+        }
+        
+        /**
+         * @retuen Возвращает сумму всех ставок на маркет
+         */
+        public float getSumBets(){
+        	return sumBets;
+        }
 }

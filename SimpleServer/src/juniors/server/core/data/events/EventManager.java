@@ -48,6 +48,10 @@ public class EventManager implements EventManagerInterface {
 	    getEvent(eventId).getMarket(marketId).addOutcome(newOutcome);
 	    outcomeMap.put(newOutcome.getOutcomeId(), newOutcome);
 	    
+	    // задаём маркет исходу
+	    Market curMarket = getEvent(eventId).getMarket(marketId);
+	    newOutcome.setMarket(curMarket);
+	    
 	    return true;
 	}
 	

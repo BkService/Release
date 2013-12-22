@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import juniors.server.core.data.bets.*;
+import juniors.server.core.data.coefficentcorrecter;
 
 /**
  * Исход маркета. Содержит описание, контейнер со ставками на этот исход.
@@ -13,12 +14,15 @@ import juniors.server.core.data.bets.*;
  */
 public class Outcome {
 	private final Integer outcomeId;
+	private Market market;	// маркет для исхода
 	private Double coefficient; //всегда больше 1
 	private String description;
 	private boolean isWin; // true - исход победил
 	private boolean isFinished; // маркет закончился
 	private Set<Bet> bets; // контейнер со ставками на данный исход
-	private float maxBet = 1000; // максимальная возможная ставка
+	private float maxBet = 1000f; // максимальная возможная ставка
+	private float sumBets = 0f;	// сумма всех ставок на исход. пересчитывается автоматически
+	private float paySumIfWin = 0f;	// сумма, которую выплатим в случае выигрыша исхода
 	
 	public Outcome(Integer id){
 		outcomeId = id;
@@ -89,7 +93,15 @@ public class Outcome {
 	public boolean addBet(Bet newBet){
 	    if(isFinished) return false;
 	    
+	    sumBets += newBet.getSum();	// пересчитываю общую сумму ставок
+	    paySumIfWin += newBet.getSum() * newBet.getCoefficient(); 
+	    market.addSumBet(newBet.getSum());
+	    
 	    bets.add(newBet);
+	    
+	    // пересчёт коэффициентов
+	    CoefficientCorrecter.correct(market, this);
+	    
 	    return true;
 	}
 	
@@ -150,6 +162,36 @@ public class Outcome {
 	
 	public float getMaxBet(){
 		return maxBet;
+	}
+	
+	/**
+	 * 
+	 * @return - сумма ставок на исход
+	 */
+	public float getSumBets(){
+		return sumBets;
+	}
+	
+	/**
+	 * 
+	 * @return сумма, которую должен выплатить букмекер в случае выигрыша исхода
+	 */
+	public float getPaySumIfWin(){
+		return paySumIfWin;
+	}
+	
+	/**
+	 * Задаёт родительский маркет для исхода.
+	 * @param market
+	 * @return - false если маркет уже задан
+	 */
+	public boolean setMarket(Market market){
+		if (market != null){
+			return false;
+		}
+		
+		this.market = market;
+		return true;
 	}
 }
 
