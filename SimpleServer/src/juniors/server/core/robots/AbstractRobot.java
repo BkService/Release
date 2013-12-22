@@ -130,7 +130,7 @@ public abstract class AbstractRobot {
 							logger.info(nameToLogs() + " made bet to " + outcome);
 							markMarket();
 						} else {
-							logger.info(nameToLogs() + " had a problem");
+							logger.info(nameToLogs() + " Server doesn't accept a bet");
 						}
 					} else {
 						logger.warning(nameToLogs() + "Robot is died, he is Bunkrot");

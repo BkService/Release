@@ -107,6 +107,9 @@ public class Market {
             isFinished = true;            
         }
         
+        public boolean isFinish() {
+        	return isFinished;
+        }
         
         @Override       
         public String toString() {
