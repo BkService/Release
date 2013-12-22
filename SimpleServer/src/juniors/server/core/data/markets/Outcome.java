@@ -24,8 +24,8 @@ public class Outcome {
 	private float sumBets = 0f;	// сумма всех ставок на исход. пересчитывается автоматически
 	private float paySumIfWin = 0f;	// сумма, которую выплатим в случае выигрыша исхода
 	
-	private final float maxMaxBet = 1000000f;	// максимально возможная максимальная ставка
-	private final float minMaxBet = 15f;	// минимально возможная максимальная ставка
+	private final float MAX_MAX_BET = 1000000f;	// максимально возможная максимальная ставка
+	private final float MIN_MAX_BET = 1000f;	// минимально возможная максимальная ставка
 	
 	public Outcome(Integer id){
 		outcomeId = id;
@@ -163,11 +163,11 @@ public class Outcome {
 	public float setMaxBet(float newMaxBet){
 		// если ставка больше максимально большой или меньше минимальной, 
 		// то приравнивается к заданным значениям
-		if (newMaxBet > maxMaxBet){
-			newMaxBet = maxMaxBet;
+		if (newMaxBet > MAX_MAX_BET){
+			newMaxBet = MAX_MAX_BET;
 		}
-		if (newMaxBet < minMaxBet){
-			newMaxBet = minMaxBet;
+		if (newMaxBet < MIN_MAX_BET){
+			newMaxBet = MIN_MAX_BET;
 		}
 		
 		
@@ -209,6 +209,13 @@ public class Outcome {
 		
 		this.market = market;
 		return true;
+	}
+	
+	/**
+	 * Устанавливает значение максимальной ставки на минимально возможное (1000)
+	 */
+	public void setInitialMaxBet(){
+		maxBet = MIN_MAX_BET;
 	}
 }
 
