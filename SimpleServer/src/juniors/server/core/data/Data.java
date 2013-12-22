@@ -183,7 +183,7 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 				
 		// Записываю везде ставку. Если не удалось - тоже ошибка
 		if (!currentOutcome.addBet(newBet)) {
-			logger.warning("DATA: fail add bet on current outcome!");
+			logger.warning("DATA: fail add bet: Current market had already started");
 			return null;
 		}
 		if (!getUser(userLogin).addBet(newBet)) {
