@@ -17,7 +17,7 @@ public class CoefficientCorrecter {
 	public static void normalize(Market market) {
 		double sumP = 0;
 		for (Outcome out : market.getOutcomeCollection()) {
-			sumP += 1 / out.getCoefficient();
+			sumP += (out.getCoefficient() == 0 ? 0 : 1 / out.getCoefficient());
 		}
 		for (Outcome out : market.getOutcomeCollection()) {
 			out.setCoefficient(out.getCoefficient() * sumP);
@@ -29,7 +29,7 @@ public class CoefficientCorrecter {
 	private static void setMaxBets(Market m) {
 		for (Outcome out : m.getOutcomeCollection()) {
 			if (out.getPaySumIfWin() < m.getSumBets()) {
-				out.setMaxBet( (float) Math.max(out.getMaxBet(), m.getSumBets() / (out.getCoefficient() * 10) ));
+				out.setMaxBet( (float) Math.max(out.getMaxBet(), m.getSumBets() / ((out.getCoefficient() == 0 ? out.getCoefficient() : 1) * 10)));
 			} else {
 				if (out.getSumBets() * out.getCoefficient() > m.getSumBets()) {
 					out.setInitialMaxBet();
@@ -40,14 +40,14 @@ public class CoefficientCorrecter {
 	
 	
 	private static double getSmoothingParametr(double outcomeSumBets) {
-		return Math.min(0.5, (Math.log(outcomeSumBets) / 20.0));
+		return Math.min(0.3, (Math.log(outcomeSumBets) / 40.0));
 	}
 	
 	public static void changeCoefficients(Market m) {
 		double sumBets = m.getSumBets();
 		for (Outcome out : m.getOutcomeCollection()) {
 			double curCoefficent  = out.getCoefficient();
-			double estimatedCoefficent = sumBets / m.getSumBets();
+			double estimatedCoefficent = (m.getSumBets() == 0 ? 100 : sumBets / m.getSumBets());
 			double c = getSmoothingParametr(m.getSumBets());
 			double newCoefficient = c * estimatedCoefficent + (1.0 - c) * curCoefficent;
 			out.setCoefficient(newCoefficient);
