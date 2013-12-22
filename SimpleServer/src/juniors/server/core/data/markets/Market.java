@@ -17,6 +17,7 @@ public class Market {
 	private boolean isFinished;
 	private float sumBets = 0;	// общая сумма всех ставок на маркет
 	//private long finishTime; 
+	private boolean lockCoefficientCorrect = false; // блокирует изменение коеффициентов
 	
 	public Market(Integer id){
 	    	isFinished = false;
@@ -136,5 +137,42 @@ public class Market {
          */
         public float getSumBets(){
         	return sumBets;
+        }
+        
+        /**
+         * Блокировка возможности изменять коэффициенты
+         */
+        void lockCoefficientCorrect(){
+        	while (lockCoefficientCorrect){
+                try {
+                        Thread.sleep(100);
+                }
+                catch (InterruptedException e){
+                        
+                }
+            }
+
+            lockCoefficientCorrect = true;
+        }
+        
+        /**
+         * Разблокировка возможности изменять коэффициенты
+         */
+        void unlockCoefficientCorrect(){
+        	lockCoefficientCorrect = false;
+        }
+        
+        /**
+         * Ожидание разблокировки возможности изменять коэффициенты
+         */
+        void waitUnlockedCoefficientCorrect(){
+        	while (lockCoefficientCorrect){
+                try {
+                        Thread.sleep(100);
+                }
+                catch (InterruptedException e){
+                        
+                }
+            }
         }
 }

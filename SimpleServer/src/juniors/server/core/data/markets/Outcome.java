@@ -63,6 +63,7 @@ public class Outcome {
 			return false;
 		}*/
 		
+		market.waitUnlockedCoefficientCorrect();
 		coefficient = newCoefficient;
 		return true;
 	}
@@ -100,7 +101,9 @@ public class Outcome {
 	    bets.add(newBet);
 	    
 	    // пересчёт коэффициентов
+	    market.lockCoefficientCorrect();
 	    CoefficientCorrecter.correct(market, this);
+	    market.unlockCoefficientCorrect();
 	    
 	    return true;
 	}

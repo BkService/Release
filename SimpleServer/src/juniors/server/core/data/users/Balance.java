@@ -30,19 +30,18 @@ public class Balance {
     
     /**
      * лочит доступ к балансу. ПОСЛЕ ВЫПОЛНЕНИЯ САМ ДОЛЖЕН РАЗЛОЧИТЬ!
-     * @throws InterruptedException
      */
     public void lockBalance(){
-                while (lockBalance){
-                    try {
-                            Thread.sleep(100);
-                    }
-                    catch (InterruptedException e){
-                            
-                    }
-                }
-        
-                lockBalance = true;
+        while (lockBalance){
+            try {
+                    Thread.sleep(100);
+            }
+            catch (InterruptedException e){
+                    
+            }
+        }
+
+        lockBalance = true;
     }
     
     /**
@@ -57,14 +56,14 @@ public class Balance {
      * @throws InterruptedException
      */
     private void waitUnlockedBalance() {
-                while (lockBalance){
-                    try {
-                            Thread.sleep(100);
-                    }
-                    catch (InterruptedException e){
-                            
-                    }
-                }
+        while (lockBalance){
+            try {
+                    Thread.sleep(100);
+            }
+            catch (InterruptedException e){
+                    
+            }
+        }
     }
     
     /**
