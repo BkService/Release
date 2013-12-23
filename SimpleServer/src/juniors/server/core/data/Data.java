@@ -164,6 +164,7 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 	 */
 	private Logger logger = Logs.getInstance().getLogger("data");
 	public Bet makeBet(String userLogin, int outcomeId, double sum, double coefficient) {
+		logger.info("Im in data makebet");
 		// корректны ли данные запрса
 		if (!containsUser(userLogin) || !containsOutcome(outcomeId)) {
 			System.out.println("fail");

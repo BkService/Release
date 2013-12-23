@@ -4,7 +4,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import juniors.server.core.data.bets.*;
-import juniors.server.core.data.coefficietcorrector.*;
+import juniors.server.core.data.coefficientcorrecter.CoefficientCorrecter;
+
 
 /**
  * Исход маркета. Содержит описание, контейнер со ставками на этот исход.
@@ -96,6 +97,7 @@ public class Outcome {
 	 * Создаёт ставку на данный исход 
 	 */
 	public boolean addBet(Bet newBet){
+		System.out.println("I m in add bet");
 	    if(isFinished) return false;
 	    
 	    sumBets += newBet.getSum();	// пересчитываю общую сумму ставок
