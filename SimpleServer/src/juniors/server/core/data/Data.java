@@ -164,12 +164,13 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 	 */
 	private Logger logger = Logs.getInstance().getLogger("data");
 	public Bet makeBet(String userLogin, int outcomeId, double sum, double coefficient) {
-		logger.info("Im in data makebet");
-		// корректны ли данные запрса
+		logger.info("All is bad");
+		// корректны ли данные запрсая
 		if (!containsUser(userLogin) || !containsOutcome(outcomeId)) {
 			System.out.println("fail");
 			return null;
 		}
+		logger.info("Im in data makebet");
 		logger.info("DATA: check on exists user... ok");
 		Outcome currentOutcome = getOutcome(outcomeId);
 		if(currentOutcome == null)
