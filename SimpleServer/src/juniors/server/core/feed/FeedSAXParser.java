@@ -55,7 +55,7 @@ public class FeedSAXParser extends DefaultHandler {
 	public void startDocument() throws SAXException {
 		logger.info("Start parse XML...");
 	}
-
+	
 	/**
 	 * Runs when parser find start of some elements.
 	 * We understand what element found, and add it to data.
@@ -68,13 +68,21 @@ public class FeedSAXParser extends DefaultHandler {
 			long time = parseTime(atts.getValue("dt"));
 			String name = atts.getValue("n");
 			curEvent = new Event(id, time, name);
-			DataManager.getInstance().addEvent(curEvent);
+			if (DataManager.getInstance().containsEvent(id)) {
+				curEvent = DataManager.getInstance().getEvent(id);
+			} else {
+				DataManager.getInstance().addEvent(curEvent);
+			}
 		}
 		if (qName.equals("t")) {
 			int id = Integer.parseInt(atts.getValue("id"));
 			String name = atts.getValue("n");
 			curMarket = new Market(id, name);
-			curEvent.addMarket(curMarket);
+			if (DataManager.getInstance().getMarketsMap(curEvent.getEventId()).containsKey(id)) {
+				curMarket = DataManager.getInstance().getMarketsMap(curEvent.getEventId()).get(id);
+			} else {
+				curEvent.addMarket(curMarket);
+			}
 		}
 		if (qName.equals("l")) {
 			int id = Integer.parseInt(atts.getValue("id"));
@@ -105,8 +113,10 @@ public class FeedSAXParser extends DefaultHandler {
 	public void endElement(String namespaceURI, String localName, String qName)
 			throws SAXException {
 		if (qName.equals("l")) {
-			DataManager.getInstance().addOutcome(curOutcome,
-					curEvent.getEventId(), curMarket.getMarketId());
+			if (!DataManager.getInstance().containsOutcome(curOutcome.getOutcomeId())) {
+				DataManager.getInstance().addOutcome(curOutcome,
+						curEvent.getEventId(), curMarket.getMarketId());
+			}
 		}
 	}
 	

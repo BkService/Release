@@ -40,15 +40,16 @@ public class CoefficientCorrecter {
 	
 	
 	private static double getSmoothingParametr(double outcomeSumBets) {
-		return Math.min(0.3, (Math.log(outcomeSumBets) / 40.0));
+		return Math.min(0.3, Math.max(0, (Math.log(outcomeSumBets) / 40.0)));
 	}
 	
 	public static void changeCoefficients(Market m) {
+		System.out.println("I'm will change coefficents");
 		double sumBets = m.getSumBets();
 		for (Outcome out : m.getOutcomeCollection()) {
 			double curCoefficent  = out.getCoefficient();
-			double estimatedCoefficent = (m.getSumBets() == 0 ? 100 : sumBets / m.getSumBets());
-			double c = getSmoothingParametr(m.getSumBets());
+			double estimatedCoefficent = (out.getSumBets() == 0 ? 100 : sumBets / out.getSumBets());
+			double c = getSmoothingParametr(out.getSumBets());
 			double newCoefficient = c * estimatedCoefficent + (1.0 - c) * curCoefficent;
 			out.setCoefficient(newCoefficient);
 		}

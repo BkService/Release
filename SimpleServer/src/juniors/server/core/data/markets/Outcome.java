@@ -67,8 +67,16 @@ public class Outcome {
 			return false;
 		}*/
 		
+		 if (newCoefficient <= 1){
+				newCoefficient = 1.0001;
+		}
+
+		 if (newCoefficient >= 1000){
+				newCoefficient = 1000.0;
+		 }
+
 		// ожидание разблокировки возможности менять коэффициенты
-		market.waitUnlockedCoefficientCorrect();
+		//market.waitUnlockedCoefficientCorrect();
 		coefficient = newCoefficient;
 		return true;
 	}
@@ -107,9 +115,7 @@ public class Outcome {
 	    bets.add(newBet);
 	    
 	    // пересчёт коэффициентов
-	    market.lockCoefficientCorrect();
 	    CoefficientCorrecter.correct(market, this);
-	    market.unlockCoefficientCorrect();
 	    
 	    return true;
 	}
