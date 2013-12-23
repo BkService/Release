@@ -97,6 +97,7 @@ public class Outcome {
 	 * Создаёт ставку на данный исход 
 	 */
 	public boolean addBet(Bet newBet){
+		System.out.println("I m in add bet");
 	    if(isFinished) return false;
 	    
 	    sumBets += newBet.getSum();	// пересчитываю общую сумму ставок
