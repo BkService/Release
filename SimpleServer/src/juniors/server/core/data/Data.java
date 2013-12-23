@@ -432,19 +432,24 @@ public class Data implements UserManagerInterface, EventManagerInterface , Stati
 		Outcome o = new Outcome(outcomeId, coefficient);
 		Outcome o1 = new Outcome(outcomeId + 1, secondCoefficient);
 		String login = "testLogin";
-		User user = data.getUser(login);
 
 		data.addEvent(e);
 		e.addMarket(m);
 		data.addOutcome(o, e.getEventId(), m.getMarketId());
 		data.addOutcome(o1, eventId, marketId);
+		data.createUser(login, String.valueOf(rand.nextInt()), String.valueOf(rand.nextInt()), String.valueOf(rand.nextInt()), String.valueOf(rand.nextInt()));
+		User user = data.getUser(login);
+		
+		o.getCoefficient();
+		user.getLogin();
 		
 		// ставится 700 на второй исход
-		data.makeBet(user.getLogin(), o.getOutcomeId() + 1, sum, o.getCoefficient());		
+		data.makeBet(user.getLogin(), o.getOutcomeId() + 1, sum);		
 		
 		// ставится 7000 на первый исход
 		for (int i = 0; i < 10; i++){
 			String tempLogin = new String(String.valueOf(rand.nextInt()));
+			data.createUser(tempLogin, String.valueOf(rand.nextInt()), String.valueOf(rand.nextInt()), String.valueOf(rand.nextInt()), String.valueOf(rand.nextInt()));
 			data.makeBet(tempLogin, outcomeId, 700);
 		}
 		

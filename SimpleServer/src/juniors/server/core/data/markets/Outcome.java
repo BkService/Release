@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import juniors.server.core.data.bets.*;
-import juniors.server.core.data.coefficentcorrecter;
+import juniors.server.core.data.coefficietcorrector.*;
 
 /**
  * Исход маркета. Содержит описание, контейнер со ставками на этот исход.
@@ -203,9 +203,6 @@ public class Outcome {
 	 * @return - false если маркет уже задан
 	 */
 	public boolean setMarket(Market market){
-		if (market != null){
-			return false;
-		}
 		
 		this.market = market;
 		return true;
