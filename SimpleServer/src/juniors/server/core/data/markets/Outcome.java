@@ -205,9 +205,6 @@ public class Outcome {
 	 * @return - false если маркет уже задан
 	 */
 	public boolean setMarket(Market market){
-		if (market != null){
-			return false;
-		}
 		
 		this.market = market;
 		return true;
